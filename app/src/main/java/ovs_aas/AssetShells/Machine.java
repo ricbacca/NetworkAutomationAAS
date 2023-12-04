@@ -23,9 +23,9 @@ import java.util.List;
 public class Machine extends AbstractShellInstance {
     String manual;
     String version;
-    List<String> hosts;
+    List<Integer> hosts;
 
-    public Machine(Integer PORT, String idShort, String pathId, AssetKind kind, String manual, String version, List<String> hosts) {
+    public Machine(Integer PORT, String idShort, String pathId, AssetKind kind, String manual, String version, List<Integer> hosts) {
         super(PORT);
 
         this.manual = manual;

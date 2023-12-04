@@ -49,7 +49,7 @@ public class App {
             AssetKind.INSTANCE,
             manual,
             version,
-            List.of("Host1", "Host2"));
+            List.of(1, 2));
 
         ShellInstance machineTwo = new Machine(
             6004,
@@ -58,7 +58,7 @@ public class App {
             AssetKind.INSTANCE,
             manual,
             version,
-            List.of("Host3", "Host4"));
+            List.of(3, 4));
 
         ShellInstance machineThree = new Machine(
             6005,
@@ -67,7 +67,7 @@ public class App {
             AssetKind.INSTANCE,
             manual,
             version,
-            List.of("Host5", "Host6"));
+            List.of(5, 6));
 
         networkInfrastructure.createAndStartServlet();
         networkControlPlane.createAndStartServlet();

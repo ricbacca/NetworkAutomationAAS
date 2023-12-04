@@ -31,9 +31,9 @@ public class Machinery extends AbstractSubmodelInstance {
     String manual;
     String swVersion;
     String shellId;
-    List<String> hosts;
+    List<Integer> hosts;
 
-    public Machinery(String manual, String version, String idShort, List<String> hosts) {
+    public Machinery(String manual, String version, String idShort, List<Integer> hosts) {
         super();
         this.manual = manual;
         this.swVersion = version;
@@ -57,7 +57,7 @@ public class Machinery extends AbstractSubmodelInstance {
     }
 
     private LangStrings getDescription() {
-        return new LangStrings("English", "This machine is composed by: " + hosts);
+        return new LangStrings("English", "This machine is composed by host: " + hosts);
     }
 
     private File setManual() {

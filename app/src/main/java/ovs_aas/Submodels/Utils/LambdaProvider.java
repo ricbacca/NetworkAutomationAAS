@@ -231,25 +231,19 @@ public class LambdaProvider {
         };
     }
 
-    public Function<Map<String, SubmodelElement>, SubmodelElement[]> pingMachinery(List<String> machineHosts) {
+    public Function<Map<String, SubmodelElement>, SubmodelElement[]> pingMachinery(List<Integer> machineHosts) {
         return (args) -> {
             int host = ((BigInteger) args.get("To").getValue()).intValue();
 
-            if (hostNumbers(machineHosts).contains(host))
+            if (machineHosts.contains(host)) {
                 return new SubmodelElement[] {
                     new Property("Result: " + shellUtils.pingTest("10.0.0." + host))
                 };
-            else
+            } else {
                 return new SubmodelElement[] {
                     new Property("Host not in this Machinery !")
                 };
-
-
-
+            }
         };
-    }
-
-    private List<Integer> hostNumbers(List<String> machineHosts) {
-        return machineHosts.stream().map(el -> Integer.parseInt(el.split("host")[1])).collect(Collectors.toList());
     }
 }
