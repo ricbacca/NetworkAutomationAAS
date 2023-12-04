@@ -1,4 +1,4 @@
-// Copyright 2023 riccardo
+// Copyright 2023 riccardo.bacca@studio.unibo.it
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.

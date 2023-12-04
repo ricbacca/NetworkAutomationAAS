@@ -1,4 +1,5 @@
 {
     "java.compile.nullAnalysis.mode": "automatic",
-    "licenser.license": "AL2"
+    "licenser.license": "AL2",
+    "licenser.author": "riccardo.bacca@studio.unibo.it"
 }

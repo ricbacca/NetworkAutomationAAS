@@ -1,4 +1,4 @@
-// Copyright 2023 riccardo
+// Copyright 2023 riccardo.bacca@studio.unibo.it
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import java.util.Properties;
 
 public class StaticProperties {
 
-    private static final String FILE_NAME = "/home/riccardo/Desktop/OVS_AAS/app/src/main/resources/config.properties";
+    private static final String FILE_NAME = "/home/riccardo/Desktop/NetworkAutomationAAS/app/src/main/resources/config.properties";
     private static final String SIMPLE_CONTROLLERS = "SIMPLECONTROLLERS";
     private static final String CLOSED_CONTROLLERS = "CLOSEDCONTROLLERS";
     private static final String SELECTIVE_CONTROLLERS = "SELECTIVECONTROLLERS";
