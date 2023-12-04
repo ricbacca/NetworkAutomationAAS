@@ -21,7 +21,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.EnumUtils;
-import org.eclipse.basyx.submodel.metamodel.api.qualifier.haskind.ModelingKind;
 import org.eclipse.basyx.submodel.metamodel.map.submodelelement.SubmodelElement;
 import org.eclipse.basyx.submodel.metamodel.map.submodelelement.dataelement.property.Property;
 import org.eclipse.basyx.submodel.metamodel.map.submodelelement.dataelement.property.valuetype.ValueType;
@@ -53,14 +52,22 @@ public class LambdaProvider {
     public Function<Map<String, SubmodelElement>, SubmodelElement[]> getSwitchesNumber() {
         return (args) -> {
             SubmodelElement cnt1 = new Property("Controller1", ValueType.String);
-            cnt1.setValue("Controller1 -> switch:" + 
-                controller.getResponseWithoutSerial(RyuApiEnum.CONTROLLER1_GETALLSWITCHES.url));
-            cnt1.setKind(ModelingKind.TEMPLATE);
-
             SubmodelElement cnt2 = new Property("Controller2", ValueType.String);
-            cnt2.setValue("Controller2 -> switch:" + 
-                controller.getResponseWithoutSerial(RyuApiEnum.CONTROLLER2_GETALLSWITCHES.url));
-            cnt2.setKind(ModelingKind.TEMPLATE);
+
+            String cnt1Status = controller.getResponseWithoutSerial(RyuApiEnum.CONTROLLER1_GETALLSWITCHES.url);
+            String cnt2Status = controller.getResponseWithoutSerial(RyuApiEnum.CONTROLLER2_GETALLSWITCHES.url);
+
+            if (cnt1Status == null) {
+                cnt1.setValue("Controller 1: disabled");
+            } else {
+                cnt1.setValue("Controller 1: connected to Switch " + cnt1Status);
+            }
+
+            if (cnt2Status == null) {
+                cnt2.setValue("Controller 2: disabled");
+            } else {
+                cnt2.setValue("Controller 2: connected to Switch " + cnt2Status);
+            }
 
             return new SubmodelElement[] {
                 cnt1, cnt2

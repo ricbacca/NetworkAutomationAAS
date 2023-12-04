@@ -27,9 +27,8 @@ public class RestRequestRyu {
     public String getResponseWithoutSerial(String url) {
         try {
             return client.makeRequestWithoutSerialize(url);
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
+        } catch (IOException | InterruptedException e) {}
+        
         return null;
     }
 
