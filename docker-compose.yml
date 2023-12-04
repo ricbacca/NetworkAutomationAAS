@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  registry:
+    image: eclipsebasyx/aas-registry:1.4.0
+    ports:
+      - "8082:4000"
+    environment:
+      basyxcontext_accesscontrolalloworigin: "*"
+    networks:
+      - aasNet
+  server:
+    depends_on:
+      - registry
+    image: eclipsebasyx/aas-server:1.4.0
+    ports:
+      - "8081:4001"
+    environment:
+      basyxcontext_accesscontrolalloworigin: "*"
+    networks:
+      - aasNet
+  aas_gui:
+    depends_on:
+      - registry
+      - server
+    image: eclipsebasyx/aas-gui:v230703
+    ports:
+      - "3000:3000"
+    networks:
+      - aasNet
+
+networks:
+  aasNet:
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.name: "AAS_Network"
+
+
+# Registry: localhost:8082
+# AAS Server: localhost:8081
+# GUI: localhost:3000
