@@ -62,7 +62,7 @@ public class NetworkInfrastructureLambda {
             SubmodelElement cnt2 = new Property("Controller2", ValueType.String);
 
             String cnt1Status = controller.getResponseWithoutSerial(ApiEnum.getElement(1, ApiEnum.GETALLSWITCHES));
-            String cnt2Status = controller.getResponseWithoutSerial(ApiEnum.getElement(1, ApiEnum.GETALLSWITCHES));
+            String cnt2Status = controller.getResponseWithoutSerial(ApiEnum.getElement(2, ApiEnum.GETALLSWITCHES));
 
             if (cnt1Status == null) {
                 cnt1.setValue("Controller 1: disabled");

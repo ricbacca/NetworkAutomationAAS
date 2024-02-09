@@ -45,7 +45,7 @@ public class RyuControllerManager {
         System.out.print("Waiting for Firewalls to start-up");
 
         while(!client.isServerAvailable(ApiEnum.getElement(1, ApiEnum.GETFIREWALLRULES))
-            && !client.isServerAvailable(ApiEnum.getElement(2, ApiEnum.GETFIREWALLRULES))) {
+            || !client.isServerAvailable(ApiEnum.getElement(2, ApiEnum.GETFIREWALLRULES))) {
             System.out.print(".");
             try {
                 Thread.sleep(1000);
