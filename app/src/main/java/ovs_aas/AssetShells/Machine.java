@@ -16,16 +16,17 @@ package ovs_aas.AssetShells;
 
 import org.eclipse.basyx.aas.metamodel.api.parts.asset.AssetKind;
 
-import ovs_aas.AssetShells.AbstractShell.AbstractShellInstance;
-import ovs_aas.Submodels.Machinery;
+import ovs_aas.AssetShells.AbstractShell.AbstractShell;
+import ovs_aas.Submodels.Machinery.Machinery;
+
 import java.util.List;
 
-public class Machine extends AbstractShellInstance {
+public class Machine extends AbstractShell {
     String manual;
     String version;
-    List<Integer> hosts;
+    List<String> hosts;
 
-    public Machine(Integer PORT, String idShort, String pathId, AssetKind kind, String manual, String version, List<Integer> hosts) {
+    public Machine(Integer PORT, String idShort, String pathId, AssetKind kind, String manual, String version, List<String> hosts) {
         super(PORT);
 
         this.manual = manual;
@@ -36,7 +37,7 @@ public class Machine extends AbstractShellInstance {
     }
 
     private void createSubmodels() {
-        this.submodels.addAll(new Machinery(this.manual, this.version, this.getShell().getIdShort(), hosts).createSubmodel());
+        this.submodels.addAll(new Machinery(this.manual, this.version, hosts).createSubmodel());
     }
     
 }

@@ -12,22 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package ovs_aas.AssetShells;
+package ovs_aas.RyuController.Models.AccessControlList;
 
-import org.eclipse.basyx.aas.metamodel.api.parts.asset.AssetKind;
+import java.util.ArrayList;
+import java.util.List;
 
-import ovs_aas.AssetShells.AbstractShell.AbstractShell;
-import ovs_aas.Submodels.NetworkInfrastructure.NetworkInfrastructureSubmodel;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-public class NetworkInfrastructure extends AbstractShell {
-    public NetworkInfrastructure(Integer PORT, String idShort, String pathId, AssetKind kind) {
-        super(PORT);
-
-        this.shell = this.createShell(idShort, pathId, kind);
-        this.createSubmodels();
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class Rule {
+    List<Rules> rules = new ArrayList<>();
+    public List<Rules> getRules() {
+        return rules;
     }
-
-    private void createSubmodels() {
-        this.submodels.addAll(new NetworkInfrastructureSubmodel().createSubmodel());
+    public void setRules(List<Rules> rules) {
+        this.rules = rules;
+    }
+    @Override
+    public String toString() {
+        return "Rule [rules=" + rules + "]";
     }
 }

@@ -15,59 +15,58 @@
 package ovs_aas;
 
 import org.eclipse.basyx.aas.metamodel.api.parts.asset.AssetKind;
-
 import java.util.List;
 import ovs_aas.AssetShells.Machine;
 import ovs_aas.AssetShells.NetworkControlPlane;
 import ovs_aas.AssetShells.NetworkInfrastructure;
-import ovs_aas.AssetShells.AbstractShell.ShellInstance;
-import ovs_aas.ControllerAPI.Controller.ControllerClient;
+import ovs_aas.AssetShells.AbstractShell.IShell;
+import ovs_aas.RyuController.ControllerImpl.Controller;
 
 public class App {
     private final static String manual = "https://www.plattform-i40.de/IP/Redaktion/EN/Downloads/Publikation/Details_of_the_Asset_Administration_Shell_Part1_V3.pdf?__blob=publicationFile&v=1";
     private final static String version = "1.0.0";
-    private final static ControllerClient client = new ControllerClient();
+    private final static Controller client = new Controller();
     public static void main(String[] args) {
         waitForServer();
 
-        ShellInstance networkInfrastructure = new NetworkInfrastructure(
+        IShell networkInfrastructure = new NetworkInfrastructure(
             6001, 
             "Network Infrastructure", 
             "org.unibo.aas.networkInfrastructure", 
             AssetKind.INSTANCE);
 
-        ShellInstance networkControlPlane = new NetworkControlPlane(
+        IShell networkControlPlane = new NetworkControlPlane(
             6002, 
             "Network Control Plane", 
             "org.unibo.aas.networkControlPlane", 
             AssetKind.INSTANCE);
 
-        ShellInstance machineOne = new Machine(
+        IShell machineOne = new Machine(
             6003,
             "Machine1",
             "org.unibo.aas.machineOne",
             AssetKind.INSTANCE,
             manual,
             version,
-            List.of(1, 2));
+            List.of("10.0.1.1", "10.0.1.2"));
 
-        ShellInstance machineTwo = new Machine(
+        IShell machineTwo = new Machine(
             6004,
             "Machine2",
             "org.unibo.aas.machineTwo",
             AssetKind.INSTANCE,
             manual,
             version,
-            List.of(3, 4));
+            List.of("10.0.2.1", "10.0.2.2"));
 
-        ShellInstance machineThree = new Machine(
+        IShell machineThree = new Machine(
             6005,
             "Machine3",
             "org.unibo.aas.machineThree",
             AssetKind.INSTANCE,
             manual,
             version,
-            List.of(5, 6));
+            List.of("10.0.3.1", "10.0.3.2"));
 
         networkInfrastructure.createAndStartServlet();
         networkControlPlane.createAndStartServlet();
@@ -77,8 +76,10 @@ public class App {
     }
 
     private static void waitForServer() {
-        System.out.print("Waiting for Registry at localhost:8082");
-        while(!client.isServerAvailable()) {
+        String URL = "http://100.0.1.1:4000/registry/api/v1/registry";
+
+        System.out.print("Waiting for Registry at 100.0.1.1:4000");
+        while(!client.isServerAvailable(URL)) {
             System.out.print(".");
             try {
                 Thread.sleep(1000);
