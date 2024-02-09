@@ -32,7 +32,13 @@ public class MachineryLambda {
         return (args) -> {
             String pingDst = ((String) args.get("To").getValue());
 
-            if (machineHosts.contains(pingDst)) {
+            String sshHost = machineHosts.get(0);
+
+            return new SubmodelElement[] {
+                new Property("Result: " + this.pingHost.pingTest(pingDst, sshHost))
+            };
+
+            /*if (machineHosts.contains(pingDst)) {
                 String sshHost = machineHosts.stream().filter(el -> el != pingDst).findFirst().get();
 
                 return new SubmodelElement[] {
@@ -42,7 +48,7 @@ public class MachineryLambda {
                 return new SubmodelElement[] {
                     new Property("Host not pingable !")
                 };
-            }
+            }*/
         };
     }
 }
