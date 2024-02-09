@@ -22,7 +22,7 @@ import org.eclipse.basyx.submodel.metamodel.map.Submodel;
 
 import ovs_aas.Infrastructure.ModelProvider;
 
-public interface ShellInstance {
+public interface IShell {
 
     void createAndStartServlet();
 
