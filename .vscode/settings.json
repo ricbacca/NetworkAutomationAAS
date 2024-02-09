@@ -1,5 +1,8 @@
 {
     "java.compile.nullAnalysis.mode": "automatic",
     "licenser.license": "AL2",
-    "licenser.author": "riccardo.bacca@studio.unibo.it"
+    "licenser.author": "riccardo.bacca@studio.unibo.it",
+    "java.project.explorer.showNonJavaResources": true,
+    "java.dependency.packagePresentation": "hierarchical",
+    "java.configuration.updateBuildConfiguration": "automatic"
 }
