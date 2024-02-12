@@ -30,25 +30,18 @@ public class MachineryLambda {
 
     public Function<Map<String, SubmodelElement>, SubmodelElement[]> pingMachinery(List<String> machineHosts) {
         return (args) -> {
+            String pingFrom = ((String) args.get("From").getValue());
             String pingDst = ((String) args.get("To").getValue());
 
-            String sshHost = machineHosts.get(0);
-
-            return new SubmodelElement[] {
-                new Property("Result: " + this.pingHost.pingTest(pingDst, sshHost))
-            };
-
-            /*if (machineHosts.contains(pingDst)) {
-                String sshHost = machineHosts.stream().filter(el -> el != pingDst).findFirst().get();
-
+            if (machineHosts.contains(pingFrom)) {
                 return new SubmodelElement[] {
-                    new Property("Result: " + this.pingHost.pingTest(pingDst, sshHost))
+                    new Property("Result: " + this.pingHost.pingTest(pingDst, pingFrom))
                 };
             } else {
                 return new SubmodelElement[] {
-                    new Property("Host not pingable !")
+                    new Property("Selected 'from' host, must be in this machine !")
                 };
-            }*/
+            }
         };
     }
 }

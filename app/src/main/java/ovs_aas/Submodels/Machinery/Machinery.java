@@ -86,6 +86,7 @@ public class Machinery extends AbstractSubmodel {
         Operation pingMachinery = new Operation("PingMachinery");
         pingMachinery.setDescription(this.getDescription());
         pingMachinery.setInputVariables(getUtils().getCustomInputVariables(Map.of(
+            "From", ValueType.String,
             "To", ValueType.String
         )));
 
