@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package ovs_aas.RyuController.ControllerImpl;
+package ovs_aas.RyuController;
 
 import java.io.IOException;
 

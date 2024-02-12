@@ -22,9 +22,9 @@ import org.eclipse.basyx.submodel.metamodel.map.qualifier.LangStrings;
 import org.eclipse.basyx.submodel.metamodel.map.submodelelement.dataelement.property.valuetype.ValueType;
 import org.eclipse.basyx.submodel.metamodel.map.submodelelement.operation.Operation;
 
-import ovs_aas.Submodels.SubmodelImpl.AbstractSubmodel;
+import ovs_aas.RyuController.Utils.ApiEnum;
+import ovs_aas.Submodels.AbstractSubmodel;
 import ovs_aas.Submodels.Utils.Utils;
-import ovs_aas.RyuController.ApiEnum;
 
 public class Controller extends AbstractSubmodel {
 

@@ -25,7 +25,7 @@ import org.eclipse.basyx.submodel.metamodel.map.submodelelement.dataelement.prop
 import org.eclipse.basyx.submodel.metamodel.map.submodelelement.dataelement.property.valuetype.ValueType;
 import org.eclipse.basyx.submodel.metamodel.map.submodelelement.operation.Operation;
 
-import ovs_aas.Submodels.SubmodelImpl.AbstractSubmodel;
+import ovs_aas.Submodels.AbstractSubmodel;
 
 import java.util.Map;
 

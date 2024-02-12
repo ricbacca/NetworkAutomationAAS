@@ -18,9 +18,9 @@ import java.io.IOException;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
-import ovs_aas.RyuController.ApiEnum;
-import ovs_aas.RyuController.ControllerImpl.Controller;
+import ovs_aas.RyuController.Controller;
 import ovs_aas.RyuController.Models.RoleEnum;
+import ovs_aas.RyuController.Utils.ApiEnum;
 
 public class RyuControllerManager {
     private Controller client = new Controller();

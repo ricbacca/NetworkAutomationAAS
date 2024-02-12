@@ -12,25 +12,29 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package ovs_aas.Submodels.SubmodelImpl;
+package ovs_aas.RyuController.Utils;
 
-import ovs_aas.Submodels.Utils.Utils;
-import ovs_aas.Submodels.Utils.RyuControllerManager;
+import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
+import java.net.URI;
 
-public abstract class AbstractSubmodel implements ISubmodel {
-    private Utils utils;
-    private RyuControllerManager controller;
-
-    public AbstractSubmodel() {
-        this.utils = new Utils();
-        this.controller = new RyuControllerManager();
+public class HttpDeleteWithBody extends HttpEntityEnclosingRequestBase {
+    public static final String METHOD_NAME = "DELETE";
+ 
+    public String getMethod() {
+        return METHOD_NAME;
     }
-
-    public Utils getUtils() {
-        return utils;
+ 
+    public HttpDeleteWithBody(final String uri) {
+        super();
+        setURI(URI.create(uri));
     }
-    
-    public RyuControllerManager getController() {
-        return controller;
+ 
+    public HttpDeleteWithBody(final URI uri) {
+        super();
+        setURI(uri);
+    }
+ 
+    public HttpDeleteWithBody() {
+        super();
     }
 }

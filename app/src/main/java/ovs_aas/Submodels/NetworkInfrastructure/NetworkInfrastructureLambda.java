@@ -8,7 +8,7 @@ import org.eclipse.basyx.submodel.metamodel.map.submodelelement.dataelement.prop
 import org.eclipse.basyx.submodel.metamodel.map.submodelelement.dataelement.property.valuetype.ValueType;
 
 import ovs_aas.StaticProperties;
-import ovs_aas.RyuController.ApiEnum;
+import ovs_aas.RyuController.Utils.ApiEnum;
 import ovs_aas.Submodels.Utils.Utils;
 import ovs_aas.Submodels.Utils.RyuControllerManager;
 

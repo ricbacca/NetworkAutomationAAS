@@ -16,7 +16,6 @@ package ovs_aas.AssetShells;
 
 import org.eclipse.basyx.aas.metamodel.api.parts.asset.AssetKind;
 
-import ovs_aas.AssetShells.AbstractShell.AbstractShell;
 import ovs_aas.Submodels.Machinery.Machinery;
 
 import java.util.List;

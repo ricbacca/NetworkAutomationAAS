@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package ovs_aas.RyuController.ControllerImpl;
+package ovs_aas.RyuController;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -28,7 +28,7 @@ import org.apache.ibatis.javassist.tools.web.BadHttpRequest;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import ovs_aas.RyuController.ControllerImpl.Utils.HttpDeleteWithBody;
+import ovs_aas.RyuController.Utils.HttpDeleteWithBody;
 
 public class Controller extends AbstractController {
 

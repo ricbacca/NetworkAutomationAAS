@@ -12,12 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package ovs_aas.Submodels.SubmodelImpl;
+package ovs_aas.Submodels;
 
-import java.util.List;
+import ovs_aas.Submodels.Utils.Utils;
+import ovs_aas.Submodels.Utils.RyuControllerManager;
 
-import org.eclipse.basyx.submodel.metamodel.map.Submodel;
+public abstract class AbstractSubmodel implements ISubmodel {
+    private Utils utils;
+    private RyuControllerManager controller;
 
-public interface ISubmodel {
-    List<Submodel> createSubmodel();
+    public AbstractSubmodel() {
+        this.utils = new Utils();
+        this.controller = new RyuControllerManager();
+    }
+
+    public Utils getUtils() {
+        return utils;
+    }
+    
+    public RyuControllerManager getController() {
+        return controller;
+    }
 }

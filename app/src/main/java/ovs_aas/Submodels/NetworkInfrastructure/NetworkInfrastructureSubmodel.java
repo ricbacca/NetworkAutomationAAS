@@ -19,7 +19,7 @@ import org.eclipse.basyx.submodel.metamodel.map.qualifier.LangStrings;
 import org.eclipse.basyx.submodel.metamodel.map.submodelelement.dataelement.property.valuetype.ValueType;
 import org.eclipse.basyx.submodel.metamodel.map.submodelelement.operation.Operation;
 
-import ovs_aas.Submodels.SubmodelImpl.AbstractSubmodel;
+import ovs_aas.Submodels.AbstractSubmodel;
 
 import java.util.List;
 import java.util.Map;

@@ -11,11 +11,11 @@ import org.eclipse.basyx.submodel.metamodel.map.submodelelement.dataelement.prop
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
+import ovs_aas.RyuController.Models.AccessControlList;
 import ovs_aas.RyuController.Models.AggregateFlowStats;
 import ovs_aas.RyuController.Models.AllFlowStats;
 import ovs_aas.RyuController.Models.Role;
 import ovs_aas.RyuController.Models.RoleEnum;
-import ovs_aas.RyuController.Models.AccessControlList.AccessControlList;
 import ovs_aas.Submodels.Utils.RyuControllerManager;
 
 public class ControllerLambda {

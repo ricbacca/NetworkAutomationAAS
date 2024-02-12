@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package ovs_aas.RyuController.Models.AccessControlList;
+package ovs_aas.RyuController.Models.RuleImpl;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 

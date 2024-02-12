@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package ovs_aas.AssetShells.AbstractShell;
+package ovs_aas.AssetShells;
 
 import java.util.List;
 

@@ -16,11 +16,12 @@ package ovs_aas;
 
 import org.eclipse.basyx.aas.metamodel.api.parts.asset.AssetKind;
 import java.util.List;
+
+import ovs_aas.AssetShells.IShell;
 import ovs_aas.AssetShells.Machine;
 import ovs_aas.AssetShells.NetworkControlPlane;
 import ovs_aas.AssetShells.NetworkInfrastructure;
-import ovs_aas.AssetShells.AbstractShell.IShell;
-import ovs_aas.RyuController.ControllerImpl.Controller;
+import ovs_aas.RyuController.Controller;
 
 public class App {
     private final static String manual = "https://www.plattform-i40.de/IP/Redaktion/EN/Downloads/Publikation/Details_of_the_Asset_Administration_Shell_Part1_V3.pdf?__blob=publicationFile&v=1";

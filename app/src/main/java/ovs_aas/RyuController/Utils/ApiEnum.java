@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package ovs_aas.RyuController;
+package ovs_aas.RyuController.Utils;
 
 public enum ApiEnum {
     CNT1("http://100.0.0.1:8080"),

@@ -12,24 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package ovs_aas.RyuController.Models.AccessControlList;
+package ovs_aas.Submodels;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.eclipse.basyx.submodel.metamodel.map.Submodel;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class Rule {
-    List<Rules> rules = new ArrayList<>();
-    public List<Rules> getRules() {
-        return rules;
-    }
-    public void setRules(List<Rules> rules) {
-        this.rules = rules;
-    }
-    @Override
-    public String toString() {
-        return "Rule [rules=" + rules + "]";
-    }
+public interface ISubmodel {
+    List<Submodel> createSubmodel();
 }
