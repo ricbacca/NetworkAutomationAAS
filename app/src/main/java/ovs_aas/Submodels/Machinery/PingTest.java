@@ -8,6 +8,12 @@ import ovs_aas.Submodels.Utils.SSHManager;
 public class PingTest {
     private SSHManager sshManager = new SSHManager();
 
+    /**
+     * 
+     * @param pingDestination
+     * @param sshHost from which to ping from
+     * @return Ping result parsed with given Regex (Form: X packets sent, X packets received)
+     */
     public String pingTest(String pingDestination, String sshHost) {
         String command = ("ping -c 2 " + pingDestination);
         String input = sshManager.executeSingleCommand(command, sshHost);

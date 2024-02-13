@@ -32,7 +32,10 @@ public class Utils {
     public static final int SET_ROLE_OUTPUT = 1;
     public static final int GET_FIREWALL_RULES = 6;
 
-
+    /**
+     * @param values Map of String and ValueType (String, Integer, Boolean)
+     * @return list of OperationVariables for WebUI with ID and Type given from Map
+     */
     public List<OperationVariable> getCustomInputVariables(Map<String, ValueType> values) {
         List<OperationVariable> rList = new LinkedList<>();
 
@@ -44,24 +47,13 @@ public class Utils {
         return rList;
     }
 
-    public List<OperationVariable> getSimpleInputVariables(int n) {
-        return Collections.nCopies(n, new Property("Input", ValueType.String)).
-                stream().
-                peek(el -> el.setKind(ModelingKind.TEMPLATE)).
-                map(el -> new OperationVariable(el)).
-                collect(Collectors.toList());
-    }
-
-    public List<OperationVariable> getOutputVariables(int n) {
-        return Collections.nCopies(n, new Property("Output", ValueType.String)).
-            stream().
-            peek(el -> el.setKind(ModelingKind.TEMPLATE)).
-            map(el -> new OperationVariable(el)).
-            collect(Collectors.toList());
-    }
-
-    public List<OperationVariable> getInOutVariables(int n) {
-        return Collections.nCopies(n, new Property("InOut", ValueType.String)).
+    /**
+     * @param idShort
+     * @param n how many Operation variables
+     * @return N simple operation variables with ValueType String and standard IdShort
+     */
+    public List<OperationVariable> getOperationVariables(int n, String idShort) {
+        return Collections.nCopies(n, new Property(idShort, ValueType.String)).
             stream().
             peek(el -> el.setKind(ModelingKind.TEMPLATE)).
             map(el -> new OperationVariable(el)).

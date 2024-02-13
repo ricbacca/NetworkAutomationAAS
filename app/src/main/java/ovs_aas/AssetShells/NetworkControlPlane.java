@@ -17,6 +17,11 @@ package ovs_aas.AssetShells;
 import org.eclipse.basyx.aas.metamodel.api.parts.asset.AssetKind;
 import ovs_aas.Submodels.Controller.Controller;
 
+/**
+ * Extends AbstractShell for creating a Network Control Plane AAS
+ * This AAS represetns the Control Plane in a Network Configuration,
+ * allowing to exchange informations with Controllers and Firewalls
+ */
 public class NetworkControlPlane extends AbstractShell {
 
     public NetworkControlPlane(Integer PORT, String idShort, String pathId, AssetKind kind) {

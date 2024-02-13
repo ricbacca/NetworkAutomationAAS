@@ -1,5 +1,6 @@
 package ovs_aas.Submodels.NetworkInfrastructure;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -8,33 +9,38 @@ import org.eclipse.basyx.submodel.metamodel.map.submodelelement.dataelement.prop
 import org.eclipse.basyx.submodel.metamodel.map.submodelelement.dataelement.property.valuetype.ValueType;
 
 import ovs_aas.StaticProperties;
+import ovs_aas.RyuController.Controller;
 import ovs_aas.RyuController.Utils.ApiEnum;
 import ovs_aas.Submodels.Utils.Utils;
-import ovs_aas.Submodels.Utils.RyuControllerManager;
 
 enum Switch {SIMPLE, CLOSED, SELECTIVE};
 
-
 public class NetworkInfrastructureLambda {
 
-    private RyuControllerManager controller;
     private Utils utils;
-    private SSHController shellUtils;
+    private SSHController sshUtils;
+    private Controller ryuController;
     
-    public NetworkInfrastructureLambda(RyuControllerManager controller, Utils utils) {
-        this.controller = controller;
+    public NetworkInfrastructureLambda(Controller ryuController, Utils utils) {
         this.utils = utils;
-        this.shellUtils = new SSHController();
+        this.ryuController = ryuController;
+        this.sshUtils = new SSHController();
     }
 
-    private void checkEnvironment(boolean controllerInput, Switch applicant) {
+    /**
+     * @param controllerInput true or false
+     * @param switchType SimpleSwitch, Closed or Firewall
+     * Checks env variables to know if new controller can be enabled or not
+     * In negative cases, an exception is thrown.
+     */
+    private void checkEnvironment(boolean controllerInput, Switch switchType) {
         boolean closedController = StaticProperties.isClosedControllers();
         boolean simpleController = StaticProperties.isSimpleControllers();
         boolean selectiveController = StaticProperties.isSelectiveControllers();
 
         boolean throwException = false;
 
-        switch (applicant) {
+        switch (switchType) {
             case SIMPLE:
                 if ((simpleController && controllerInput) || (!simpleController && !controllerInput) || (closedController || selectiveController))
                     throwException = true;
@@ -56,13 +62,25 @@ public class NetworkInfrastructureLambda {
             throw new IllegalArgumentException("Problem with controller status !");
     }
 
+    /**
+     * 
+     * @return actual switch and Controllers status, 
+     * to know which switch is connected to which controller and viceversa
+     */
     public Function<Map<String, SubmodelElement>, SubmodelElement[]> getSwitchesNumber() {
         return (args) -> {
             SubmodelElement cnt1 = new Property("Controller1", ValueType.String);
             SubmodelElement cnt2 = new Property("Controller2", ValueType.String);
 
-            String cnt1Status = controller.getResponseWithoutSerial(ApiEnum.getElement(1, ApiEnum.GETALLSWITCHES));
-            String cnt2Status = controller.getResponseWithoutSerial(ApiEnum.getElement(2, ApiEnum.GETALLSWITCHES));
+            String cnt1Status = null;
+            String cnt2Status = null;
+
+            try {
+                cnt1Status = ryuController.makeRequestWithoutSerialize(ApiEnum.getElement(1, ApiEnum.GETALLSWITCHES));
+                cnt2Status = ryuController.makeRequestWithoutSerialize(ApiEnum.getElement(2, ApiEnum.GETALLSWITCHES));
+            } catch (IOException | InterruptedException e) {
+                e.printStackTrace();
+            }
 
             if (cnt1Status == null) {
                 cnt1.setValue("Controller 1: disabled");
@@ -82,13 +100,16 @@ public class NetworkInfrastructureLambda {
         };
     }
 
+    /**
+     * To start up simple switch controllers on each network switch.
+     */
     public Function<Map<String, SubmodelElement>, SubmodelElement[]> setSimpleSwitchControllers() {
         return (args) -> {
             Boolean controllerStatus = utils.getOrElse(args.get("Controller").getValue());
 
             checkEnvironment(controllerStatus, Switch.SIMPLE);
 
-            shellUtils.setSimpleControllers(controllerStatus);
+            sshUtils.setSimpleControllers(controllerStatus);
             StaticProperties.setSimpleControllers(controllerStatus);
             return new SubmodelElement[] {
                 new Property(controllerStatus ? "Activated" : "Deactivated"),
@@ -96,16 +117,18 @@ public class NetworkInfrastructureLambda {
         };
     }
 
-
+    /**
+     * To start up Firewall controllers on each network switch.
+     */
     public Function<Map<String, SubmodelElement>, SubmodelElement[]> setClosedControllers() {
         return (args) -> {
             Boolean controllerStatus = utils.getOrElse(args.get("Controller").getValue());
 
             checkEnvironment(controllerStatus, Switch.CLOSED);
 
-            shellUtils.setClosedController(controllerStatus);
+            sshUtils.setClosedController(controllerStatus);
             if (controllerStatus)
-                controller.enableFirewallController(false);
+                this.enableFirewallController(false);
             StaticProperties.setClosedControllers(controllerStatus);
             
             return new SubmodelElement[] {
@@ -114,16 +137,19 @@ public class NetworkInfrastructureLambda {
         };
     }
 
+    /**
+     * To start up Firewall controllers on each network switch.
+     */
     public Function<Map<String, SubmodelElement>, SubmodelElement[]> setSelectiveControllers(String sw1Selection, String sw2Selection) {
         return (args) -> {
             Boolean controllerStatus = utils.getOrElse(args.get("Controller").getValue());
 
             checkEnvironment(controllerStatus, Switch.SELECTIVE);
 
-            shellUtils.setSelectiveController(controllerStatus);
+            sshUtils.setSelectiveController(controllerStatus);
             
             if (controllerStatus) {
-                controller.enableFirewallController(true);
+                this.enableFirewallController(true);
             }
 
             StaticProperties.setSelectiveControllers(controllerStatus);
@@ -134,5 +160,26 @@ public class NetworkInfrastructureLambda {
 
         };
     }
-    
+
+    /**
+     * Enables Firewall Controllers (to be Default Deny) on each network switch
+     * @param bothSwitches if has to be enabled Default Deny mode on all switches
+     */
+    private void enableFirewallController(boolean bothSwitches) {
+        System.out.print("Waiting for Firewalls to start-up");
+
+        while(!ryuController.isServerAvailable(ApiEnum.getElement(1, ApiEnum.GETFIREWALLRULES))
+            || !ryuController.isServerAvailable(ApiEnum.getElement(2, ApiEnum.GETFIREWALLRULES))) {
+            System.out.print(".");
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (bothSwitches)
+            ryuController.putRequest(ApiEnum.getElement(2, ApiEnum.FIREWALL_ON));
+        ryuController.putRequest(ApiEnum.getElement(1, ApiEnum.FIREWALL_ON));
+    }
 }

@@ -90,7 +90,7 @@ public class Machinery extends AbstractSubmodel {
             "To", ValueType.String
         )));
 
-        pingMachinery.setOutputVariables(getUtils().getOutputVariables(1));
+        pingMachinery.setOutputVariables(getUtils().getOperationVariables(1, "Output"));
         pingMachinery.setWrappedInvokable(lambdaProvider.pingMachinery(hosts));
 
         return pingMachinery;

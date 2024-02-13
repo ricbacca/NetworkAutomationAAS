@@ -28,6 +28,10 @@ public class MachineryLambda {
         this.pingHost = new PingTest();
     }
 
+    /**
+     * @param machineHosts used to make Ping requests from
+     * @return Ping test results from Speicifc IP (on this machine) to given IP from WebUI
+     */
     public Function<Map<String, SubmodelElement>, SubmodelElement[]> pingMachinery(List<String> machineHosts) {
         return (args) -> {
             String pingFrom = ((String) args.get("From").getValue());

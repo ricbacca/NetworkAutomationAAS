@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package ovs_aas.RyuController.Models;
+package ovs_aas.RyuController.Models.RuleImpl;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -28,9 +28,6 @@ import org.eclipse.basyx.submodel.metamodel.map.submodelelement.SubmodelElement;
 import org.eclipse.basyx.submodel.metamodel.map.submodelelement.dataelement.property.Property;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-import ovs_aas.RyuController.Models.RuleImpl.Rule;
-import ovs_aas.RyuController.Models.RuleImpl.Rules;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AccessControlList {

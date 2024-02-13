@@ -14,6 +14,10 @@
 
 package ovs_aas;
 
+/**
+ * To manage System properties, used to mantain info throughout the app
+ * about which controller is on, and not cause any problems.
+ */
 public class StaticProperties {
 
     private static final String SIMPLE_CONTROLLERS = "SIMPLECONTROLLERS";

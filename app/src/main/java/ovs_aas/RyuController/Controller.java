@@ -32,11 +32,23 @@ import ovs_aas.RyuController.Utils.HttpDeleteWithBody;
 
 public class Controller extends AbstractController {
 
+    /**
+     * @param URL
+     * @return String response of Get request without serialization required
+     * @throws IOException
+     * @throws InterruptedException
+     */
     public String makeRequestWithoutSerialize(String URL) throws IOException, InterruptedException {
         CloseableHttpResponse resp = this.apacheClient.execute(new HttpGet(URL));
         return EntityUtils.toString(resp.getEntity(), StandardCharsets.UTF_8);
     }
     
+    /**
+     * @param <T> type on which to serialize the response
+     * @param URL
+     * @param typeRef
+     * @return Parsed result string for type <T>
+     */
     public <T> T makeRequestWithSerialization(String URL, TypeReference<T> typeRef) {
         try {
             CloseableHttpResponse resp = this.apacheClient.execute(new HttpGet(URL));
@@ -47,6 +59,12 @@ public class Controller extends AbstractController {
         return null;
     }
 
+    /**
+     * @param URL
+     * @param switchNumber 1 o 2
+     * @param role for the controller (Master or Slave)
+     * @return statusCode from Post request
+     */
     public Integer setControllerRole(String URL, int switchNumber, String role) {
         ObjectNode jsonBody = objMap.createObjectNode();
         jsonBody.put("dpid", switchNumber);
@@ -55,6 +73,10 @@ public class Controller extends AbstractController {
         return this.postRequest(URL, jsonBody);
     }
 
+    /**
+     * @param url
+     * @return status code
+     */
     public Integer putRequest(String url) {
         HttpPut httpPut = new HttpPut(url);
         int statusCode = 0;
@@ -76,6 +98,14 @@ public class Controller extends AbstractController {
         return statusCode;
     }
 
+    /**
+     * @param URL on which to make request (Ryu Controller IP)
+     * @param src Source IP for specific firewall Rule
+     * @param dst Destination IP for firewall rule
+     * @param actions Deny or Allow
+     * @return code 200 if all OK
+     * @return others if request did not succeeded
+     */
     public Integer postFirewallRules(String URL, String src, String dst, String actions) {
         ObjectNode jsonBody = objMap.createObjectNode();
 
@@ -93,6 +123,12 @@ public class Controller extends AbstractController {
         return this.postRequest(URL, jsonBody);
     }
 
+    /**
+     * @param URL
+     * @param rule_id to be deleted
+     * @return code 200 if all OK
+     * @return others if request did not succeeded
+     */
     public Integer deleteFirewallRule(String URL, int rule_id) {
         HttpDeleteWithBody httpDelete = new HttpDeleteWithBody(URL);
 
@@ -120,6 +156,11 @@ public class Controller extends AbstractController {
         return statusCode;
     }
 
+    /**
+     * @param URL for Server on which to Poll for a positive response
+     * @return true if Server on provided URL reply with StatusCode 200
+     * @return false otherwise
+     */
     public Boolean isServerAvailable(String URL) {
         HttpGet getRequest = new HttpGet(URL);
         int statusCode = 0;

@@ -49,6 +49,12 @@ public class SSHController {
         });
     }
 
+    /**
+     * @param switchNumber 1 or 2
+     * @param isClosedController if closed controller has to be enabled
+     * @param isSelectiveController if selective controller has to be enabled
+     * @return selected Command to be executed on SSH connection to each Controller
+     */
     private String selectCommand(int switchNumber, boolean isClosedController, boolean isSelectiveController) {
         int tcpPort = (switchNumber == 1 ? 6633 : 6653);
         int apiRestPort = (switchNumber == 1 ? 8080 : 9090);
@@ -88,6 +94,9 @@ public class SSHController {
         }
     }
 
+    /**
+     * Executes a Kill command for ryu manager apps on each Ryu Controller.
+     */
     private void killController() {
         sshManager.executeSingleCommand(KILL_RYU, SSH_CNT1);
         sshManager.executeSingleCommand(KILL_RYU, SSH_CNT2);

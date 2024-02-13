@@ -14,23 +14,27 @@
 
 package ovs_aas.Submodels;
 
+import ovs_aas.RyuController.Controller;
 import ovs_aas.Submodels.Utils.Utils;
-import ovs_aas.Submodels.Utils.RyuControllerManager;
 
+/**
+ * Abstract class used to remove some repeated code along all Submodel Implementations.
+ */
 public abstract class AbstractSubmodel implements ISubmodel {
     private Utils utils;
-    private RyuControllerManager controller;
+    private Controller ryuController;
 
     public AbstractSubmodel() {
         this.utils = new Utils();
-        this.controller = new RyuControllerManager();
+        this.ryuController = new Controller();
     }
 
     public Utils getUtils() {
         return utils;
     }
-    
-    public RyuControllerManager getController() {
-        return controller;
+
+    public Controller getRyuController() {
+        return ryuController;
     }
+
 }

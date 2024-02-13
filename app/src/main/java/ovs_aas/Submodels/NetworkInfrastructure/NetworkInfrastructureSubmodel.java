@@ -30,7 +30,7 @@ public class NetworkInfrastructureSubmodel extends AbstractSubmodel {
 
     public NetworkInfrastructureSubmodel() {
         super();
-        this.lambdaProvider = new NetworkInfrastructureLambda(this.getController(), this.getUtils());
+        this.lambdaProvider = new NetworkInfrastructureLambda(this.getRyuController(), this.getUtils());
     }
 
     @Override
@@ -52,7 +52,7 @@ public class NetworkInfrastructureSubmodel extends AbstractSubmodel {
 
     private Operation switchesOperation() {
         Operation switches = new Operation("SwitchesInfo");
-        switches.setOutputVariables(getUtils().getOutputVariables(2));
+        switches.setOutputVariables(getUtils().getOperationVariables(2, "Output"));
         switches.setWrappedInvokable(lambdaProvider.getSwitchesNumber());
 
         return switches;
@@ -66,7 +66,7 @@ public class NetworkInfrastructureSubmodel extends AbstractSubmodel {
                 "Controller", ValueType.Boolean
             )));
 
-        setController.setOutputVariables(getUtils().getOutputVariables(1));
+        setController.setOutputVariables(getUtils().getOperationVariables(1, "Output"));
         setController.setWrappedInvokable(lambdaProvider.setSimpleSwitchControllers());
 
         return setController;
@@ -80,7 +80,7 @@ public class NetworkInfrastructureSubmodel extends AbstractSubmodel {
                 "Controller", ValueType.Boolean
             )));
 
-        setController.setOutputVariables(getUtils().getOutputVariables(1));
+        setController.setOutputVariables(getUtils().getOperationVariables(1, "Output"));
         setController.setWrappedInvokable(lambdaProvider.setClosedControllers());
 
         return setController;
@@ -91,7 +91,7 @@ public class NetworkInfrastructureSubmodel extends AbstractSubmodel {
         setController.setInputVariables(getUtils().getCustomInputVariables(Map.of(
             "Controller", ValueType.Boolean
             )));
-        setController.setOutputVariables(getUtils().getOutputVariables(1));
+        setController.setOutputVariables(getUtils().getOperationVariables(1, "Output"));
         setController.setWrappedInvokable(lambdaProvider.setSelectiveControllers("Sw1Host", "Sw2Host"));
 
         return setController;

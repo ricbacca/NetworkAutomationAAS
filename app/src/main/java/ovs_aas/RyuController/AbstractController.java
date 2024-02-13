@@ -34,6 +34,11 @@ public abstract class AbstractController {
         this.objMap = new ObjectMapper();
     }
 
+    /**
+     * @param URL
+     * @param body
+     * @return Post request Status Code
+     */
     public Integer postRequest(String URL, ObjectNode body) {
         int statusCode = 0;
         HttpPost httpPost = new HttpPost(URL);

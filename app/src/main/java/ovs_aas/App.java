@@ -28,7 +28,7 @@ public class App {
     private final static String version = "1.0.0";
     private final static Controller client = new Controller();
     public static void main(String[] args) {
-        waitForServer();
+        waitForRegistry();
 
         IShell networkInfrastructure = new NetworkInfrastructure(
             6001, 
@@ -76,7 +76,10 @@ public class App {
         machineThree.createAndStartServlet();
     }
 
-    private static void waitForServer() {
+    /**
+     * Polling on Registry Url, waiting for a positive response to proceed on.
+     */
+    private static void waitForRegistry() {
         String URL = "http://100.0.1.1:4000/registry/api/v1/registry";
 
         System.out.print("Waiting for Registry at 100.0.1.1:4000");

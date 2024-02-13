@@ -18,6 +18,10 @@ import org.eclipse.basyx.aas.metamodel.api.parts.asset.AssetKind;
 
 import ovs_aas.Submodels.NetworkInfrastructure.NetworkInfrastructureSubmodel;
 
+/**
+ * Extends AbstractShell to create Network Infrastructure AAS
+ * This AAS represents the Infrastructure level in a Network Configuration.
+ */
 public class NetworkInfrastructure extends AbstractShell {
     public NetworkInfrastructure(Integer PORT, String idShort, String pathId, AssetKind kind) {
         super(PORT);

@@ -20,6 +20,10 @@ import ovs_aas.Submodels.Machinery.Machinery;
 
 import java.util.List;
 
+/**
+ * Extends AbstractShell for creating a Machine AAS
+ * This AAS represents some machinery with simple submodels: getVersion, setVersion, pingTest.
+ */
 public class Machine extends AbstractShell {
     String manual;
     String version;

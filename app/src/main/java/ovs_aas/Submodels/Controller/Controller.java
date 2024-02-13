@@ -26,6 +26,9 @@ import ovs_aas.RyuController.Utils.ApiEnum;
 import ovs_aas.Submodels.AbstractSubmodel;
 import ovs_aas.Submodels.Utils.Utils;
 
+/**
+ * Submodel Impl for Netwok Control Plane AAS.
+ */
 public class Controller extends AbstractSubmodel {
 
     private ControllerLambda lambdaProvider;
@@ -34,7 +37,7 @@ public class Controller extends AbstractSubmodel {
     public Controller(int controllerNumber) {
         super();
         this.controllerId = controllerNumber;
-        this.lambdaProvider = new ControllerLambda(this.getController());
+        this.lambdaProvider = new ControllerLambda();
     }
 
     @Override
@@ -56,18 +59,17 @@ public class Controller extends AbstractSubmodel {
 
     private Operation aggregateFlowStats() {
         Operation aggregateFlows = new Operation("AggregateFlows");
-        aggregateFlows.setOutputVariables(getUtils().getOutputVariables(Utils.AGGREGATE_FLOWS_OUTPUT));
+        aggregateFlows.setOutputVariables(getUtils().getOperationVariables(Utils.AGGREGATE_FLOWS_OUTPUT, "Output"));
         aggregateFlows.setWrappedInvokable(
             lambdaProvider.getAggregateStats(ApiEnum.getElement(controllerId, ApiEnum.GETAGGREGATEFLOWSTATS)));
 
         return aggregateFlows;
     }
 
-
     private Operation allFlowStats() {
         Operation allFlowStats = new Operation("AllFlowStats");
 
-        allFlowStats.setOutputVariables(getUtils().getOutputVariables(Utils.ALL_FLOWS_OUTPUT));
+        allFlowStats.setOutputVariables(getUtils().getOperationVariables(Utils.ALL_FLOWS_OUTPUT, "Output"));
         allFlowStats.setWrappedInvokable(
             lambdaProvider.getAllFlowStats(ApiEnum.getElement(controllerId, ApiEnum.GETALLFLOWSTATS)));
 
@@ -77,7 +79,7 @@ public class Controller extends AbstractSubmodel {
     private Operation getRole() {
         Operation getRole = new Operation("GetRole");
 
-        getRole.setOutputVariables(getUtils().getOutputVariables(Utils.GET_ROLE_OUTPUT));
+        getRole.setOutputVariables(getUtils().getOperationVariables(Utils.GET_ROLE_OUTPUT, "Output"));
         getRole.setWrappedInvokable(
             lambdaProvider.getRole(ApiEnum.getElement(controllerId, ApiEnum.GETROLE)));
 
@@ -89,7 +91,7 @@ public class Controller extends AbstractSubmodel {
         setRole.setInputVariables(getUtils().getCustomInputVariables(
             Map.of("Role", ValueType.String)
         ));
-        setRole.setOutputVariables(getUtils().getOutputVariables(Utils.SET_ROLE_OUTPUT));
+        setRole.setOutputVariables(getUtils().getOperationVariables(Utils.SET_ROLE_OUTPUT, "Output"));
         setRole.setWrappedInvokable(
             lambdaProvider.setRole(ApiEnum.getElement(controllerId, ApiEnum.SETROLE)));
 
@@ -103,7 +105,7 @@ public class Controller extends AbstractSubmodel {
             "Source", ValueType.String,
             "Destination", ValueType.String
         )));
-        setRule.setOutputVariables(getUtils().getOutputVariables(1));
+        setRule.setOutputVariables(getUtils().getOperationVariables(1, "Output"));
         setRule.setWrappedInvokable(lambdaProvider.setFirewallRule(this.getFirewallUrl()));
 
         return setRule;
@@ -111,7 +113,7 @@ public class Controller extends AbstractSubmodel {
 
     private Operation getFirewallRules() {
         Operation getRules = new Operation("GetFirewallRules");
-        getRules.setOutputVariables(getUtils().getOutputVariables(Utils.GET_FIREWALL_RULES));
+        getRules.setOutputVariables(getUtils().getOperationVariables(Utils.GET_FIREWALL_RULES, "Output"));
 
         getRules.setWrappedInvokable(lambdaProvider.getFirewallRules(this.getFirewallUrl()));
 
@@ -121,7 +123,7 @@ public class Controller extends AbstractSubmodel {
     private Operation deleteFirewallRule() {
         Operation deleteRule = new Operation("DeleteFirewallRules");
         deleteRule.setInputVariables(getUtils().getCustomInputVariables(Map.of("RuleId", ValueType.Integer)));
-        deleteRule.setOutputVariables(getUtils().getOutputVariables(1));
+        deleteRule.setOutputVariables(getUtils().getOperationVariables(1, "Output"));
 
         deleteRule.setWrappedInvokable(lambdaProvider.deleteFirewallRules(this.getFirewallUrl()));
 

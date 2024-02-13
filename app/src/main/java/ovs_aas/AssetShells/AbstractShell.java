@@ -28,6 +28,10 @@ import ovs_aas.Infrastructure.ModelProvider;
 import ovs_aas.Infrastructure.UploadAAS;
 import ovs_aas.Infrastructure.UploadAASImpl;
 
+/**
+ * Abstract class for Asset Administration Shells
+ * Implements IShell
+ */
 public abstract class AbstractShell implements IShell {
     private final String REGISTRYPATH = "http://100.0.1.1:4000/registry/";
     

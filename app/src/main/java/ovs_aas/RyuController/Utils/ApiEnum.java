@@ -18,7 +18,6 @@ public enum ApiEnum {
     CNT1("http://100.0.0.1:8080"),
     CNT2("http://100.0.0.2:9090"),
 
-    // questo non vuole controllerId
     GETALLSWITCHES("/stats/switches"),
 
     GETAGGREGATEFLOWSTATS("/stats/aggregateflow/"),
@@ -27,7 +26,6 @@ public enum ApiEnum {
 
     GETROLE("/stats/role/"),
 
-    // questo non vuole controllerId
     SETROLE("/stats/role"),
 
     FIREWALL_ON("/firewall/module/enable/000000000000000"),
@@ -40,6 +38,12 @@ public enum ApiEnum {
         this.url = url;
     }
 
+    /**
+     * Used to not repeat same String on enum elements
+     * @param controllerId 1 or 2
+     * @param element from this enum
+     * @return String of enum + specific ID for selected controller
+     */
     public static String getElement(Integer controllerId, ApiEnum element) {
         if (element.equals(GETALLSWITCHES) || element.equals(SETROLE))
             return (controllerId == 1 ? CNT1.url : CNT2.url) + element.url;
