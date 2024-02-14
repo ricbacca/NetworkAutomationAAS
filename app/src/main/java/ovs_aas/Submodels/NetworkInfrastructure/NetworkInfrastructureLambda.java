@@ -128,7 +128,7 @@ public class NetworkInfrastructureLambda {
 
             sshUtils.setClosedController(controllerStatus);
             if (controllerStatus)
-                this.enableFirewallController(false);
+                this.firewallDefaultDenyEnable(false);
             StaticProperties.setClosedControllers(controllerStatus);
             
             return new SubmodelElement[] {
@@ -140,7 +140,7 @@ public class NetworkInfrastructureLambda {
     /**
      * To start up Firewall controllers on each network switch.
      */
-    public Function<Map<String, SubmodelElement>, SubmodelElement[]> setSelectiveControllers(String sw1Selection, String sw2Selection) {
+    public Function<Map<String, SubmodelElement>, SubmodelElement[]> setSelectiveControllers() {
         return (args) -> {
             Boolean controllerStatus = utils.getOrElse(args.get("Controller").getValue());
 
@@ -149,7 +149,7 @@ public class NetworkInfrastructureLambda {
             sshUtils.setSelectiveController(controllerStatus);
             
             if (controllerStatus) {
-                this.enableFirewallController(true);
+                this.firewallDefaultDenyEnable(true);
             }
 
             StaticProperties.setSelectiveControllers(controllerStatus);
@@ -165,9 +165,16 @@ public class NetworkInfrastructureLambda {
      * Enables Firewall Controllers (to be Default Deny) on each network switch
      * @param bothSwitches if has to be enabled Default Deny mode on all switches
      */
-    private void enableFirewallController(boolean bothSwitches) {
-        System.out.print("Waiting for Firewalls to start-up");
+    private void firewallDefaultDenyEnable(boolean bothSwitches) {
+        this.waitForFirewallToStart();
 
+        if (bothSwitches)
+            ryuController.putRequest(ApiEnum.getElement(2, ApiEnum.FIREWALL_DEFAULT_DENY));
+        ryuController.putRequest(ApiEnum.getElement(1, ApiEnum.FIREWALL_DEFAULT_DENY));
+    }
+
+    private void waitForFirewallToStart() {
+        System.out.print("Waiting for Firewalls to start-up");
         while(!ryuController.isServerAvailable(ApiEnum.getElement(1, ApiEnum.GETFIREWALLRULES))
             || !ryuController.isServerAvailable(ApiEnum.getElement(2, ApiEnum.GETFIREWALLRULES))) {
             System.out.print(".");
@@ -177,9 +184,23 @@ public class NetworkInfrastructureLambda {
                 e.printStackTrace();
             }
         }
+    }
 
-        if (bothSwitches)
-            ryuController.putRequest(ApiEnum.getElement(2, ApiEnum.FIREWALL_ON));
-        ryuController.putRequest(ApiEnum.getElement(1, ApiEnum.FIREWALL_ON));
+    private void firewallDefaultAcceptanceEnable() {
+        ryuController.putRequest(ApiEnum.getElement(2, ApiEnum.FIREWALL_DEFAULT_ACCEPT));
+        ryuController.putRequest(ApiEnum.getElement(1, ApiEnum.FIREWALL_DEFAULT_ACCEPT));
+    }
+
+    public Function<Map<String, SubmodelElement>, SubmodelElement[]> setDefaultAcceptanceFirewall() {
+        return (args) -> {
+            Boolean defaultAcceptance = utils.getOrElse(args.get("DefaultAcceptance").getValue());
+            
+            if (!defaultAcceptance)
+                this.firewallDefaultDenyEnable(true);
+            else
+                this.firewallDefaultAcceptanceEnable();
+
+            return new SubmodelElement[] {};
+        };
     }
 }

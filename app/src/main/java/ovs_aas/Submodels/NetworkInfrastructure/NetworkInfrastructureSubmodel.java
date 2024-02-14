@@ -37,17 +37,20 @@ public class NetworkInfrastructureSubmodel extends AbstractSubmodel {
     public List<Submodel> createSubmodel() {
 		Submodel switches = new Submodel();
         Submodel controllers = new Submodel();
+        Submodel firewallMode = new Submodel();
 
 		switches.setIdShort("Switches");
         switches.addSubmodelElement(switchesOperation());
 
         controllers.setIdShort("SelectControllers");
-
         controllers.addSubmodelElement(setOpenController());
         controllers.addSubmodelElement(setClosedController());
         controllers.addSubmodelElement(setSelectiveController());
 
-		return List.of(switches, controllers);
+        firewallMode.setIdShort("Firewall");
+        firewallMode.addSubmodelElement(setFirewallMode());
+
+		return List.of(switches, controllers, firewallMode);
 	}
 
     private Operation switchesOperation() {
@@ -92,8 +95,18 @@ public class NetworkInfrastructureSubmodel extends AbstractSubmodel {
             "Controller", ValueType.Boolean
             )));
         setController.setOutputVariables(getUtils().getOperationVariables(1, "Output"));
-        setController.setWrappedInvokable(lambdaProvider.setSelectiveControllers("Sw1Host", "Sw2Host"));
+        setController.setWrappedInvokable(lambdaProvider.setSelectiveControllers());
 
         return setController;
+    }
+
+    private Operation setFirewallMode() {
+        Operation setFirewallMode = new Operation("SetFirewallMode");
+        setFirewallMode.setInputVariables(getUtils().getCustomInputVariables(Map.of(
+            "DefaultAcceptance", ValueType.Boolean
+            )));
+        setFirewallMode.setWrappedInvokable(lambdaProvider.setDefaultAcceptanceFirewall());
+
+        return setFirewallMode;
     }
 }

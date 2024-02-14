@@ -28,7 +28,9 @@ public enum ApiEnum {
 
     SETROLE("/stats/role"),
 
-    FIREWALL_ON("/firewall/module/enable/000000000000000"),
+    FIREWALL_DEFAULT_DENY("/firewall/module/enable/000000000000000"),
+
+    FIREWALL_DEFAULT_ACCEPT("/firewall/module/disable/000000000000000"),
 
     GETFIREWALLRULES("/firewall/rules/000000000000000");
 
