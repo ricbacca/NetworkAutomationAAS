@@ -109,11 +109,11 @@ public class Controller extends AbstractController {
     public Integer postFirewallRules(String URL, String src, String dst, String actions) {
         ObjectNode jsonBody = objMap.createObjectNode();
 
-        if (!src.equals("10.0.0.0")) {
+        if (!src.isBlank()) {
             jsonBody.put("nw_src", src);
         }
 
-        if (!dst.equals("10.0.0.0")) {
+        if (!dst.isBlank()) {
             jsonBody.put("nw_dst", dst);
         }
         
