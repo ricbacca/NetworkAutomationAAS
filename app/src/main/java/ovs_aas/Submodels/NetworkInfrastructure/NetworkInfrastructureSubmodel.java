@@ -101,9 +101,9 @@ public class NetworkInfrastructureSubmodel extends AbstractSubmodel {
     }
 
     private Operation setFirewallMode() {
-        Operation setFirewallMode = new Operation("SetFirewallMode");
+        Operation setFirewallMode = new Operation("FirewallOperation");
         setFirewallMode.setInputVariables(getUtils().getCustomInputVariables(Map.of(
-            "DefaultAcceptance", ValueType.Boolean
+            "Disabled", ValueType.Boolean
             )));
         setFirewallMode.setWrappedInvokable(lambdaProvider.setDefaultAcceptanceFirewall());
 
