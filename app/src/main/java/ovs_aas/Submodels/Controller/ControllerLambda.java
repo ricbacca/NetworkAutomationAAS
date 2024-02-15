@@ -95,12 +95,19 @@ public class ControllerLambda {
         return (args) -> {
             String src = args.get("Source").getValue() == null ? "" : args.get("Source").getValue().toString();
             String dst = args.get("Destination").getValue() == null ? "" : args.get("Destination").getValue().toString();
-            
-            int statusCode = client.postFirewallRules(url, src, dst, "ALLOW");
+            String type = args.get("Type").getValue().toString();
 
-            return new SubmodelElement[] {
-                new Property("StatusCode: " + statusCode)
-            };
+            if (!(type == "ALLOW" || type == "DENY")) {
+                return new SubmodelElement[] {
+                    new Property("Type MUST be ALLOW or DENY !")
+                };
+            } else {
+                int statusCode = client.postFirewallRules(url, src, dst, "ALLOW");
+
+                return new SubmodelElement[] {
+                    new Property("StatusCode: " + statusCode)
+                };
+            }
         };
     }
 

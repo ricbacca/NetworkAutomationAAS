@@ -103,7 +103,8 @@ public class Controller extends AbstractSubmodel {
         setRule.setDescription(new LangStrings("English", "Source and Destination between 1 and 6. Add rules for both ways."));
         setRule.setInputVariables(getUtils().getCustomInputVariables(Map.of(
             "Source", ValueType.String,
-            "Destination", ValueType.String
+            "Destination", ValueType.String,
+            "Type", ValueType.String
         )));
         setRule.setOutputVariables(getUtils().getOperationVariables(1, "Output"));
         setRule.setWrappedInvokable(lambdaProvider.setFirewallRule(this.getFirewallUrl()));
