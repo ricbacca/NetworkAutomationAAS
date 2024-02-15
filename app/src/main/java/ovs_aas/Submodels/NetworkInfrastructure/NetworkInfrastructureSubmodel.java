@@ -48,6 +48,7 @@ public class NetworkInfrastructureSubmodel extends AbstractSubmodel {
         controllers.addSubmodelElement(setSelectiveController());
 
         firewallMode.setIdShort("Firewall");
+        firewallMode.setDescription(new LangStrings("English", "Disabling firewall will result in ever blocking whole traffic, indipendently from rules."));
         firewallMode.addSubmodelElement(setFirewallMode());
 
 		return List.of(switches, controllers, firewallMode);
