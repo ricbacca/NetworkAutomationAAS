@@ -42,19 +42,24 @@ public class Controller extends AbstractSubmodel {
 
     @Override
     public List<Submodel> createSubmodel() {
-        Submodel cnt1Submodel = new Submodel();
+        Submodel cntSubmodel = new Submodel();
+        Submodel simulations = new Submodel();
 
-		cnt1Submodel.setIdShort("Controller" + controllerId);
+		cntSubmodel.setIdShort("Controller" + controllerId);
+        simulations.setIdShort("Simulations");
 
-        cnt1Submodel.addSubmodelElement(aggregateFlowStats());
-        cnt1Submodel.addSubmodelElement(allFlowStats());
-        cnt1Submodel.addSubmodelElement(getRole());
-        cnt1Submodel.addSubmodelElement(setRole());
-        cnt1Submodel.addSubmodelElement(setFirewallRules());
-        cnt1Submodel.addSubmodelElement(getFirewallRules());
-        cnt1Submodel.addSubmodelElement(deleteFirewallRule());
+        cntSubmodel.addSubmodelElement(aggregateFlowStats());
+        cntSubmodel.addSubmodelElement(allFlowStats());
+        cntSubmodel.addSubmodelElement(getRole());
+        cntSubmodel.addSubmodelElement(setRole());
+        cntSubmodel.addSubmodelElement(setFirewallRules());
+        cntSubmodel.addSubmodelElement(getFirewallRules());
+        cntSubmodel.addSubmodelElement(deleteFirewallRule());
 
-		return List.of(cnt1Submodel);
+        simulations.addSubmodelElement(isolateSingleHost());
+        simulations.addSubmodelElement(enableSingleHostTraffic());
+
+		return List.of(cntSubmodel, simulations);
     }
 
     private Operation aggregateFlowStats() {
@@ -104,7 +109,8 @@ public class Controller extends AbstractSubmodel {
         setRule.setInputVariables(getUtils().getCustomInputVariables(Map.of(
             "Source", ValueType.String,
             "Destination", ValueType.String,
-            "Type", ValueType.String
+            "Type", ValueType.String,
+            "Priority", ValueType.Integer
         )));
         setRule.setOutputVariables(getUtils().getOperationVariables(1, "Output"));
         setRule.setWrappedInvokable(lambdaProvider.setFirewallRule(this.getFirewallUrl()));
@@ -129,6 +135,30 @@ public class Controller extends AbstractSubmodel {
         deleteRule.setWrappedInvokable(lambdaProvider.deleteFirewallRules(this.getFirewallUrl()));
 
         return deleteRule;
+    }
+
+    private Operation isolateSingleHost() {
+        Operation isolateSingleHost = new Operation("IsolateSingleHost");
+        isolateSingleHost.setDescription(new LangStrings("English", "Single given host will be banned to/from traffic."));
+        isolateSingleHost.setInputVariables(getUtils().getCustomInputVariables(Map.of(
+            "HostIP", ValueType.String
+        )));
+        isolateSingleHost.setOutputVariables(getUtils().getOperationVariables(1, "Output"));
+        isolateSingleHost.setWrappedInvokable(lambdaProvider.isolateSingleHost());
+
+        return isolateSingleHost;
+    }
+
+    private Operation enableSingleHostTraffic() {
+        Operation enableSingleHost = new Operation("EnableSingleHost");
+        enableSingleHost.setDescription(new LangStrings("English", "Single given host will be banned to/from traffic."));
+        enableSingleHost.setInputVariables(getUtils().getCustomInputVariables(Map.of(
+            "HostIP", ValueType.String
+        )));
+        enableSingleHost.setOutputVariables(getUtils().getOperationVariables(1, "Output"));
+        enableSingleHost.setWrappedInvokable(lambdaProvider.enableSingleHost());
+
+        return enableSingleHost;
     }
 
     private String getFirewallUrl() {

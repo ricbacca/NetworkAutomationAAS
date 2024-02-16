@@ -6,8 +6,10 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.EnumUtils;
+import org.apache.http.client.HttpResponseException;
 import org.eclipse.basyx.submodel.metamodel.map.submodelelement.SubmodelElement;
 import org.eclipse.basyx.submodel.metamodel.map.submodelelement.dataelement.property.Property;
+import org.joda.time.IllegalFieldValueException;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
@@ -16,8 +18,10 @@ import ovs_aas.RyuController.Models.AllFlowStats;
 import ovs_aas.RyuController.Models.Role;
 import ovs_aas.RyuController.Models.RoleEnum;
 import ovs_aas.RyuController.Models.RuleImpl.AccessControlList;
+import ovs_aas.RyuController.Utils.ApiEnum;
 import ovs_aas.RyuController.Controller;
 
+enum firewallRulesType {ALLOW, DENY};
 
 public class ControllerLambda {
 
@@ -75,14 +79,18 @@ public class ControllerLambda {
      */
     public Function<Map<String, SubmodelElement>, SubmodelElement[]> setRole(String url) {
         return (args) -> {
-            int statusCode = 0;
             String input = (String) args.get("Role").getValue();
+
             if (EnumUtils.isValidEnum(RoleEnum.class, input)) {
-                statusCode = client.setControllerRole(url, 1, RoleEnum.valueOf(input).toString());
-            } else statusCode = 400;
+                try {
+                    client.setControllerRole(url, 1, RoleEnum.valueOf(input).toString());
+                } catch (HttpResponseException e) {
+                    e.printStackTrace();
+                }
+            }
             
             return new SubmodelElement[] {
-                new Property("StatusCode: " + statusCode)
+                new Property("All OK")
             }; 
         }; 
     }
@@ -96,18 +104,21 @@ public class ControllerLambda {
             String src = args.get("Source").getValue() == null ? "" : args.get("Source").getValue().toString();
             String dst = args.get("Destination").getValue() == null ? "" : args.get("Destination").getValue().toString();
             String type = args.get("Type").getValue().toString();
+            int priority = args.get("Priority").getValue() == null ? 1 : Integer.valueOf(args.get("Priority").getValue().toString());
 
-            if (!(type == "ALLOW" || type == "DENY")) {
-                return new SubmodelElement[] {
-                    new Property("Type MUST be ALLOW or DENY !")
-                };
-            } else {
-                int statusCode = client.postFirewallRules(url, src, dst, "ALLOW");
-
-                return new SubmodelElement[] {
-                    new Property("StatusCode: " + statusCode)
-                };
+            if (!EnumUtils.isValidEnum(firewallRulesType.class, type)){
+                throw new IllegalFieldValueException("Type", type);
             }
+            
+            try {
+                client.postFirewallRules(url, src, dst, type, priority);
+            } catch (HttpResponseException e) {
+                e.printStackTrace();
+            }
+
+            return new SubmodelElement[] {
+                new Property("All OK")
+            };
         };
     }
 
@@ -130,10 +141,71 @@ public class ControllerLambda {
      */
     public Function<Map<String, SubmodelElement>, SubmodelElement[]> deleteFirewallRules(String url) {
         return (args) -> {
-            int statusCode = client.deleteFirewallRule(url, ((BigInteger) args.get("RuleId").getValue()).intValue());
+            try {
+                client.deleteFirewallRule(url, ((BigInteger) args.get("RuleId").getValue()).intValue());
+            } catch (HttpResponseException e) {
+                e.printStackTrace();
+            }
 
             return new SubmodelElement[] {
-                new Property("StatusCode: " + statusCode)
+                new Property("All OK")
+            };
+        };
+    }
+
+    public Function<Map<String, SubmodelElement>, SubmodelElement[]> isolateSingleHost() {
+        return (args) -> {
+            String hostIP = args.get("HostIP").getValue() == null ? "" : args.get("HostIP").getValue().toString();
+
+            String cnt1 = ApiEnum.getElement(1, ApiEnum.GETFIREWALLRULES);
+            String cnt2 = ApiEnum.getElement(2, ApiEnum.GETFIREWALLRULES);
+
+            if (hostIP.isBlank())
+                throw new IllegalFieldValueException("HostIP", hostIP);
+
+            try {
+                // Consento tutto il traffico tra tutti
+                client.postFirewallRules(cnt1, "", "", "ALLOW", 1);        
+                client.postFirewallRules(cnt2, "", "", "ALLOW", 1);    
+
+                // Nego solo questo possibile traffico, con maggiore priorità rispetto alla regola precedente
+                client.postFirewallRules(cnt1, hostIP, "", "DENY", 10);    
+                client.postFirewallRules(cnt1, "", hostIP, "DENY", 10);
+                client.postFirewallRules(cnt2, hostIP, "", "DENY", 10);    
+                client.postFirewallRules(cnt2, "", hostIP, "DENY", 10);
+            } catch (HttpResponseException e) {
+                e.printStackTrace();
+            }
+            
+            return new SubmodelElement[] {
+                new Property("All OK")
+            };
+        };
+    }
+
+    public Function<Map<String, SubmodelElement>, SubmodelElement[]> enableSingleHost() {
+        return (args) -> {
+            String hostIP = args.get("HostIP").getValue() == null ? "" : args.get("HostIP").getValue().toString();
+
+            String cnt1 = ApiEnum.getElement(1, ApiEnum.GETFIREWALLRULES);
+            String cnt2 = ApiEnum.getElement(2, ApiEnum.GETFIREWALLRULES);
+
+            if (hostIP.isBlank())
+                throw new IllegalFieldValueException("HostIP", hostIP);
+
+            try {
+                // Il firewall è default deny, quindi il traffico è di default bloccato verso tutti
+                // Consento solo il traffico da HostIP verso tutti e viceversa
+                client.postFirewallRules(cnt1, hostIP, "", "ALLOW", 1);    
+                client.postFirewallRules(cnt1, "", hostIP, "ALLOW", 1);
+                client.postFirewallRules(cnt2, hostIP, "", "ALLOW", 1);    
+                client.postFirewallRules(cnt2, "", hostIP, "ALLOW", 1);
+            } catch (HttpResponseException e) {
+                e.printStackTrace();
+            }
+            
+            return new SubmodelElement[] {
+                new Property("All OK")
             };
         };
     }
