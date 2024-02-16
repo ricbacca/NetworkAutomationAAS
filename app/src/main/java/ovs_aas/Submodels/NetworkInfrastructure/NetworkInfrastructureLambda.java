@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.function.Function;
 
+import org.apache.http.client.HttpResponseException;
 import org.eclipse.basyx.submodel.metamodel.map.submodelelement.SubmodelElement;
 import org.eclipse.basyx.submodel.metamodel.map.submodelelement.dataelement.property.Property;
 import org.eclipse.basyx.submodel.metamodel.map.submodelelement.dataelement.property.valuetype.ValueType;
@@ -128,7 +129,7 @@ public class NetworkInfrastructureLambda {
 
             sshUtils.setClosedController(controllerStatus);
             if (controllerStatus)
-                this.firewallDefaultDenyEnable(false);
+                this.firewallDefaultDenyEnable(false, false);
             StaticProperties.setClosedControllers(controllerStatus);
             
             return new SubmodelElement[] {
@@ -149,7 +150,7 @@ public class NetworkInfrastructureLambda {
             sshUtils.setSelectiveController(controllerStatus);
             
             if (controllerStatus) {
-                this.firewallDefaultDenyEnable(true);
+                this.firewallDefaultDenyEnable(true, false);
             }
 
             StaticProperties.setSelectiveControllers(controllerStatus);
@@ -165,12 +166,19 @@ public class NetworkInfrastructureLambda {
      * Enables Firewall Controllers (to be Default Deny) on each network switch
      * @param bothSwitches if has to be enabled Default Deny mode on all switches
      */
-    private void firewallDefaultDenyEnable(boolean bothSwitches) {
-        this.waitForFirewallToStart();
+    private void firewallDefaultDenyEnable(boolean bothSwitches, boolean firewallsAlreadyStarted) {
+        if (!firewallsAlreadyStarted) {
+            this.waitForFirewallToStart();
+        }
 
-        if (bothSwitches)
-            ryuController.putRequest(ApiEnum.getElement(2, ApiEnum.FIREWALL_DEFAULT_DENY));
-        ryuController.putRequest(ApiEnum.getElement(1, ApiEnum.FIREWALL_DEFAULT_DENY));
+        if (bothSwitches) {
+            try {
+                ryuController.putRequest(ApiEnum.getElement(2, ApiEnum.FIREWALL_DEFAULT_DENY));
+                ryuController.putRequest(ApiEnum.getElement(1, ApiEnum.FIREWALL_DEFAULT_DENY));
+            } catch (HttpResponseException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void waitForFirewallToStart() {
@@ -184,23 +192,5 @@ public class NetworkInfrastructureLambda {
                 e.printStackTrace();
             }
         }
-    }
-
-    private void firewallDefaultAcceptanceEnable() {
-        ryuController.putRequest(ApiEnum.getElement(2, ApiEnum.FIREWALL_DEFAULT_ACCEPT));
-        ryuController.putRequest(ApiEnum.getElement(1, ApiEnum.FIREWALL_DEFAULT_ACCEPT));
-    }
-
-    public Function<Map<String, SubmodelElement>, SubmodelElement[]> setDefaultAcceptanceFirewall() {
-        return (args) -> {
-            Boolean defaultAcceptance = utils.getOrElse(args.get("DefaultAcceptance").getValue());
-            
-            if (!defaultAcceptance)
-                this.firewallDefaultDenyEnable(true);
-            else
-                this.firewallDefaultAcceptanceEnable();
-
-            return new SubmodelElement[] {};
-        };
     }
 }
