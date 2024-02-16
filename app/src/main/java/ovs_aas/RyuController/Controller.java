@@ -139,14 +139,21 @@ public class Controller extends AbstractController {
         
         int statusCode = 0;
         String statusMessage = "";
+        CloseableHttpResponse response = null;
 
         try {
             httpDelete.setEntity(new StringEntity(body.toString()));  
-            HttpResponse response = apacheClient.execute(httpDelete);
+            response = apacheClient.execute(httpDelete);
             statusCode = response.getStatusLine().getStatusCode();
             statusMessage = response.getStatusLine().getReasonPhrase();
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            if (response != null) {
+                try {
+                    response.close();
+                } catch (IOException e) {}
+            }
         }
 
         if (statusCode != HTTP_OK)

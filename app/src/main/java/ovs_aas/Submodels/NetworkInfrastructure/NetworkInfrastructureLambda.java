@@ -129,7 +129,7 @@ public class NetworkInfrastructureLambda {
 
             sshUtils.setClosedController(controllerStatus);
             if (controllerStatus)
-                this.firewallDefaultDenyEnable(false, false);
+                this.firewallDefaultDenyEnable(false);
             StaticProperties.setClosedControllers(controllerStatus);
             
             return new SubmodelElement[] {
@@ -150,7 +150,7 @@ public class NetworkInfrastructureLambda {
             sshUtils.setSelectiveController(controllerStatus);
             
             if (controllerStatus) {
-                this.firewallDefaultDenyEnable(true, false);
+                this.firewallDefaultDenyEnable(true);
             }
 
             StaticProperties.setSelectiveControllers(controllerStatus);
@@ -166,10 +166,8 @@ public class NetworkInfrastructureLambda {
      * Enables Firewall Controllers (to be Default Deny) on each network switch
      * @param bothSwitches if has to be enabled Default Deny mode on all switches
      */
-    private void firewallDefaultDenyEnable(boolean bothSwitches, boolean firewallsAlreadyStarted) {
-        if (!firewallsAlreadyStarted) {
-            this.waitForFirewallToStart();
-        }
+    private void firewallDefaultDenyEnable(boolean bothSwitches) {
+        this.waitForFirewallToStart();
 
         if (bothSwitches) {
             try {
