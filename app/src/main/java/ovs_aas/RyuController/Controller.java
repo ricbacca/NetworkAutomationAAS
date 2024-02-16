@@ -18,12 +18,12 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.util.EntityUtils;
-import org.apache.ibatis.javassist.tools.web.BadHttpRequest;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -64,8 +64,9 @@ public class Controller extends AbstractController {
      * @param switchNumber 1 o 2
      * @param role for the controller (Master or Slave)
      * @return statusCode from Post request
+     * @throws HttpResponseException 
      */
-    public Integer setControllerRole(String URL, int switchNumber, String role) {
+    public Integer setControllerRole(String URL, int switchNumber, String role) throws HttpResponseException {
         ObjectNode jsonBody = objMap.createObjectNode();
         jsonBody.put("dpid", switchNumber);
         jsonBody.put("role", role);
@@ -76,25 +77,23 @@ public class Controller extends AbstractController {
     /**
      * @param url
      * @return status code
+     * @throws HttpResponseException 
      */
-    public Integer putRequest(String url) {
+    public Integer putRequest(String url) throws HttpResponseException {
         HttpPut httpPut = new HttpPut(url);
         int statusCode = 0;
-        String body = "";
+        String statusMessage = "";
         try {
             HttpResponse response = apacheClient.execute(httpPut);
             statusCode = response.getStatusLine().getStatusCode();
-            body = EntityUtils.toString(response.getEntity());
+            statusMessage = response.getStatusLine().getReasonPhrase();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         if (statusCode != HTTP_OK)
-            try {
-                throw new BadHttpRequest(new Exception(String.format("Result: %d %s", statusCode, body)));
-            } catch (BadHttpRequest e) {
-                e.printStackTrace();
-            }
+            throw new HttpResponseException(statusCode, statusMessage);
+
         return statusCode;
     }
 
@@ -105,8 +104,9 @@ public class Controller extends AbstractController {
      * @param actions Deny or Allow
      * @return code 200 if all OK
      * @return others if request did not succeeded
+     * @throws HttpResponseException 
      */
-    public Integer postFirewallRules(String URL, String src, String dst, String actions) {
+    public Integer postFirewallRules(String URL, String src, String dst, String actions, int priority) throws HttpResponseException {
         ObjectNode jsonBody = objMap.createObjectNode();
 
         if (!src.isBlank()) {
@@ -119,6 +119,7 @@ public class Controller extends AbstractController {
         
         jsonBody.put("nw_proto", "ICMP");
         jsonBody.put("actions", actions);
+        jsonBody.put("priority", priority);
 
         return this.postRequest(URL, jsonBody);
     }
@@ -128,31 +129,29 @@ public class Controller extends AbstractController {
      * @param rule_id to be deleted
      * @return code 200 if all OK
      * @return others if request did not succeeded
+     * @throws HttpResponseException 
      */
-    public Integer deleteFirewallRule(String URL, int rule_id) {
+    public Integer deleteFirewallRule(String URL, int rule_id) throws HttpResponseException {
         HttpDeleteWithBody httpDelete = new HttpDeleteWithBody(URL);
 
         ObjectNode body = objMap.createObjectNode();
         body.put("rule_id", rule_id);
         
         int statusCode = 0;
-        String responseBody = "";
+        String statusMessage = "";
 
         try {
             httpDelete.setEntity(new StringEntity(body.toString()));  
             HttpResponse response = apacheClient.execute(httpDelete);
             statusCode = response.getStatusLine().getStatusCode();
-            responseBody = EntityUtils.toString(response.getEntity());
+            statusMessage = response.getStatusLine().getReasonPhrase();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         if (statusCode != HTTP_OK)
-            try {
-                throw new BadHttpRequest(new Exception(String.format("Result: %d %s", statusCode, responseBody)));
-            } catch (BadHttpRequest e) {
-                e.printStackTrace();
-            }
+            throw new HttpResponseException(statusCode, statusMessage);
+            
         return statusCode;
     }
 
