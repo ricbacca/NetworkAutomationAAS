@@ -171,6 +171,8 @@ public class ControllerLambda {
                 // Nego solo questo possibile traffico, con maggiore priorità rispetto alla regola precedente
                 client.postFirewallRules(cnt1, hostIP, "", "DENY", 10);    
                 client.postFirewallRules(cnt1, "", hostIP, "DENY", 10);
+
+                // Stessa cosa nel secondo controller
                 client.postFirewallRules(cnt2, hostIP, "", "DENY", 10);    
                 client.postFirewallRules(cnt2, "", hostIP, "DENY", 10);
             } catch (HttpResponseException e) {
@@ -198,8 +200,42 @@ public class ControllerLambda {
                 // Consento solo il traffico da HostIP verso tutti e viceversa
                 client.postFirewallRules(cnt1, hostIP, "", "ALLOW", 1);    
                 client.postFirewallRules(cnt1, "", hostIP, "ALLOW", 1);
+
+                // Stessa cosa nel secondo controller
                 client.postFirewallRules(cnt2, hostIP, "", "ALLOW", 1);    
                 client.postFirewallRules(cnt2, "", hostIP, "ALLOW", 1);
+            } catch (HttpResponseException e) {
+                e.printStackTrace();
+            }
+            
+            return new SubmodelElement[] {
+                new Property("All OK")
+            };
+        };
+    }
+
+    public Function<Map<String, SubmodelElement>, SubmodelElement[]> excludeAccess() {
+        return (args) -> {
+            String hostIP = "192.168.0.0/24";
+
+            String cnt1 = ApiEnum.getElement(1, ApiEnum.GETFIREWALLRULES);
+            String cnt2 = ApiEnum.getElement(2, ApiEnum.GETFIREWALLRULES);
+
+            if (hostIP.isBlank())
+                throw new IllegalFieldValueException("HostIP", hostIP);
+
+            try {
+                // Consento tutto il traffico tra tutti
+                client.postFirewallRules(cnt1, "", "", "ALLOW", 1);        
+                client.postFirewallRules(cnt2, "", "", "ALLOW", 1);    
+
+                // Nego solo questo possibile traffico, con maggiore priorità rispetto alla regola precedente
+                client.postFirewallRules(cnt1, hostIP, "", "DENY", 10);    
+                client.postFirewallRules(cnt1, "", hostIP, "DENY", 10);
+
+                // Stessa cosa nel secondo controller
+                client.postFirewallRules(cnt2, hostIP, "", "DENY", 10);    
+                client.postFirewallRules(cnt2, "", hostIP, "DENY", 10);
             } catch (HttpResponseException e) {
                 e.printStackTrace();
             }

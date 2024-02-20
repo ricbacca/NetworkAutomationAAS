@@ -58,6 +58,7 @@ public class Controller extends AbstractSubmodel {
 
         simulations.addSubmodelElement(isolateSingleHost());
         simulations.addSubmodelElement(enableSingleHostTraffic());
+        simulations.addSubmodelElement(excludeExternalAccess());
 
 		return List.of(cntSubmodel, simulations);
     }
@@ -160,6 +161,16 @@ public class Controller extends AbstractSubmodel {
 
         return enableSingleHost;
     }
+
+    private Operation excludeExternalAccess() {
+        Operation excludeAccess = new Operation("ExcludeExternalAccess");
+        excludeAccess.setDescription(new LangStrings("English", "External hosts (domain 192.168.0.X/24) will be banned."));
+        excludeAccess.setOutputVariables(getUtils().getOperationVariables(1, "Output"));
+        excludeAccess.setWrappedInvokable(lambdaProvider.excludeAccess());
+
+        return excludeAccess;
+    }
+
 
     private String getFirewallUrl() {
         return ApiEnum.getElement(controllerId, ApiEnum.GETFIREWALLRULES);
