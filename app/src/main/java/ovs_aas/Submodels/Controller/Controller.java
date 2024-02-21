@@ -130,7 +130,7 @@ public class Controller extends AbstractSubmodel {
 
     private Operation deleteFirewallRule() {
         Operation deleteRule = new Operation("DeleteFirewallRules");
-        deleteRule.setInputVariables(getUtils().getCustomInputVariables(Map.of("RuleId", ValueType.Integer)));
+        deleteRule.setInputVariables(getUtils().getCustomInputVariables(Map.of("RuleId", ValueType.String)));
         deleteRule.setOutputVariables(getUtils().getOperationVariables(1, "Output"));
 
         deleteRule.setWrappedInvokable(lambdaProvider.deleteFirewallRules(this.getFirewallUrl()));
@@ -145,7 +145,7 @@ public class Controller extends AbstractSubmodel {
             "HostIP", ValueType.String
         )));
         isolateSingleHost.setOutputVariables(getUtils().getOperationVariables(1, "Output"));
-        isolateSingleHost.setWrappedInvokable(lambdaProvider.isolateSingleHost());
+        isolateSingleHost.setWrappedInvokable(lambdaProvider.manageHostReachability(ControllerLambda.simulationType.DENYSINGLEHOST));
 
         return isolateSingleHost;
     }
@@ -157,7 +157,7 @@ public class Controller extends AbstractSubmodel {
             "HostIP", ValueType.String
         )));
         enableSingleHost.setOutputVariables(getUtils().getOperationVariables(1, "Output"));
-        enableSingleHost.setWrappedInvokable(lambdaProvider.enableSingleHost());
+        enableSingleHost.setWrappedInvokable(lambdaProvider.manageHostReachability(ControllerLambda.simulationType.ALLOWSINGLEHOST));
 
         return enableSingleHost;
     }
@@ -166,7 +166,7 @@ public class Controller extends AbstractSubmodel {
         Operation excludeAccess = new Operation("ExcludeExternalAccess");
         excludeAccess.setDescription(new LangStrings("English", "External hosts (domain 192.168.0.X/24) will be banned."));
         excludeAccess.setOutputVariables(getUtils().getOperationVariables(1, "Output"));
-        excludeAccess.setWrappedInvokable(lambdaProvider.excludeAccess());
+        excludeAccess.setWrappedInvokable(lambdaProvider.manageHostReachability(ControllerLambda.simulationType.DENYEXTERNALHOST));
 
         return excludeAccess;
     }

@@ -1,6 +1,5 @@
 package ovs_aas.Submodels.Controller;
 
-import java.math.BigInteger;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -18,17 +17,18 @@ import ovs_aas.RyuController.Models.AllFlowStats;
 import ovs_aas.RyuController.Models.Role;
 import ovs_aas.RyuController.Models.RoleEnum;
 import ovs_aas.RyuController.Models.RuleImpl.AccessControlList;
-import ovs_aas.RyuController.Utils.ApiEnum;
 import ovs_aas.RyuController.Controller;
 
-enum firewallRulesType {ALLOW, DENY};
-
 public class ControllerLambda {
+    enum firewallRulesType {ALLOW, DENY};
+    enum simulationType {ALLOWSINGLEHOST, DENYSINGLEHOST, DENYEXTERNALHOST};
 
     private Controller client;
+    private SimUtils simulation;
 
     public ControllerLambda() {
         this.client = new Controller();
+        this.simulation = new SimUtils();
     }
 
     /**
@@ -142,7 +142,7 @@ public class ControllerLambda {
     public Function<Map<String, SubmodelElement>, SubmodelElement[]> deleteFirewallRules(String url) {
         return (args) -> {
             try {
-                client.deleteFirewallRule(url, ((BigInteger) args.get("RuleId").getValue()).intValue());
+                client.deleteFirewallRule(url, args.get("RuleId").getValue().toString());
             } catch (HttpResponseException e) {
                 e.printStackTrace();
             }
@@ -153,91 +153,25 @@ public class ControllerLambda {
         };
     }
 
-    public Function<Map<String, SubmodelElement>, SubmodelElement[]> isolateSingleHost() {
+    /**
+     * 
+     * @param isolate true if single host must be isolated, false otherwise
+     * @param externalAccess true if external hosts must be blocked, false otherwise
+     * @return
+     */
+    public Function<Map<String, SubmodelElement>, SubmodelElement[]> manageHostReachability(simulationType type) {
         return (args) -> {
-            String hostIP = args.get("HostIP").getValue() == null ? "" : args.get("HostIP").getValue().toString();
-
-            String cnt1 = ApiEnum.getElement(1, ApiEnum.GETFIREWALLRULES);
-            String cnt2 = ApiEnum.getElement(2, ApiEnum.GETFIREWALLRULES);
+            String hostIP = type.equals(simulationType.DENYEXTERNALHOST) ? 
+                    "192.168.0.0/24" : args.get("HostIP").getValue() == null ? "" : args.get("HostIP").getValue().toString();
 
             if (hostIP.isBlank())
                 throw new IllegalFieldValueException("HostIP", hostIP);
 
-            try {
-                // Consento tutto il traffico tra tutti
-                client.postFirewallRules(cnt1, "", "", "ALLOW", 1);        
-                client.postFirewallRules(cnt2, "", "", "ALLOW", 1);    
-
-                // Nego solo questo possibile traffico, con maggiore priorità rispetto alla regola precedente
-                client.postFirewallRules(cnt1, hostIP, "", "DENY", 10);    
-                client.postFirewallRules(cnt1, "", hostIP, "DENY", 10);
-
-                // Stessa cosa nel secondo controller
-                client.postFirewallRules(cnt2, hostIP, "", "DENY", 10);    
-                client.postFirewallRules(cnt2, "", hostIP, "DENY", 10);
-            } catch (HttpResponseException e) {
-                e.printStackTrace();
-            }
-            
-            return new SubmodelElement[] {
-                new Property("All OK")
-            };
-        };
-    }
-
-    public Function<Map<String, SubmodelElement>, SubmodelElement[]> enableSingleHost() {
-        return (args) -> {
-            String hostIP = args.get("HostIP").getValue() == null ? "" : args.get("HostIP").getValue().toString();
-
-            String cnt1 = ApiEnum.getElement(1, ApiEnum.GETFIREWALLRULES);
-            String cnt2 = ApiEnum.getElement(2, ApiEnum.GETFIREWALLRULES);
-
-            if (hostIP.isBlank())
-                throw new IllegalFieldValueException("HostIP", hostIP);
-
-            try {
-                // Il firewall è default deny, quindi il traffico è di default bloccato verso tutti
-                // Consento solo il traffico da HostIP verso tutti e viceversa
-                client.postFirewallRules(cnt1, hostIP, "", "ALLOW", 1);    
-                client.postFirewallRules(cnt1, "", hostIP, "ALLOW", 1);
-
-                // Stessa cosa nel secondo controller
-                client.postFirewallRules(cnt2, hostIP, "", "ALLOW", 1);    
-                client.postFirewallRules(cnt2, "", hostIP, "ALLOW", 1);
-            } catch (HttpResponseException e) {
-                e.printStackTrace();
-            }
-            
-            return new SubmodelElement[] {
-                new Property("All OK")
-            };
-        };
-    }
-
-    public Function<Map<String, SubmodelElement>, SubmodelElement[]> excludeAccess() {
-        return (args) -> {
-            String hostIP = "192.168.0.0/24";
-
-            String cnt1 = ApiEnum.getElement(1, ApiEnum.GETFIREWALLRULES);
-            String cnt2 = ApiEnum.getElement(2, ApiEnum.GETFIREWALLRULES);
-
-            if (hostIP.isBlank())
-                throw new IllegalFieldValueException("HostIP", hostIP);
-
-            try {
-                // Consento tutto il traffico tra tutti
-                client.postFirewallRules(cnt1, "", "", "ALLOW", 1);        
-                client.postFirewallRules(cnt2, "", "", "ALLOW", 1);    
-
-                // Nego solo questo possibile traffico, con maggiore priorità rispetto alla regola precedente
-                client.postFirewallRules(cnt1, hostIP, "", "DENY", 10);    
-                client.postFirewallRules(cnt1, "", hostIP, "DENY", 10);
-
-                // Stessa cosa nel secondo controller
-                client.postFirewallRules(cnt2, hostIP, "", "DENY", 10);    
-                client.postFirewallRules(cnt2, "", hostIP, "DENY", 10);
-            } catch (HttpResponseException e) {
-                e.printStackTrace();
+            if (type.equals(simulationType.ALLOWSINGLEHOST)) {
+                simulation.manageTrafficToHost(client, hostIP, true);
+            } else {
+                simulation.makeFirewallDefaultAcceptance(client);
+                simulation.manageTrafficToHost(client, hostIP, false);
             }
             
             return new SubmodelElement[] {

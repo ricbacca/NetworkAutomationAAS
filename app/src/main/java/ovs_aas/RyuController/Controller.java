@@ -131,12 +131,17 @@ public class Controller extends AbstractController {
      * @return others if request did not succeeded
      * @throws HttpResponseException 
      */
-    public Integer deleteFirewallRule(String URL, int rule_id) throws HttpResponseException {
+    public Integer deleteFirewallRule(String URL, String rule_id) throws HttpResponseException {
         HttpDeleteWithBody httpDelete = new HttpDeleteWithBody(URL);
-
         ObjectNode body = objMap.createObjectNode();
-        body.put("rule_id", rule_id);
-        
+
+        try {
+            int rule = Integer.parseInt(rule_id);           
+            body.put("rule_id", rule);
+        } catch (NumberFormatException ex) {
+            body.put("rule_id", rule_id);
+        }
+
         int statusCode = 0;
         String statusMessage = "";
         CloseableHttpResponse response = null;
