@@ -35,5 +35,5 @@ tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
     setZip64(true)
     manifest.attributes["Main-Class"] = application.mainClass
     archiveFileName.set("OVS_AAS.jar")
-    destinationDirectory.set(file("/home/riccardo/Desktop/Kathara/KatharaAAS/aas_project"))
+    destinationDirectory.set(file("../../Kathara/aas_project/"))
 }
