@@ -1,3 +1,6 @@
+# NetworkAutomationAAS
+Project for LM-32 thesis. Network Automation in Industry 4.0, using Asset Adiministration Shells.
+
 **To compile:**
 1. Compile Docker images
 2. Open App (Java Project) and run "gradle build"
