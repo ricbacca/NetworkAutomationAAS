@@ -1,0 +1,14 @@
+# Collision domain E (for H1 and H2)
+ip address add 10.0.1.254/24 dev eth0
+
+# Collision domain F (for H3 and H4)
+ip address add 10.0.2.254/24 dev eth1
+
+# Collision domain G (for OVS1 and OVS2)
+ip address add 10.0.5.253/24 dev eth2
+
+# Connection to external world
+ip address add 192.168.0.1/24 dev eth3
+
+# Configuring static route between R1 and R2 to reach network 10.0.3.0/24, via router at 10.0.5.254 (R2)
+ip route add 10.0.3.0/24 via 10.0.5.254 dev eth2

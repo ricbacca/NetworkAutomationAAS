@@ -1,0 +1,7 @@
+# Collision domain H (H5 and H6, collision domain C)
+ip address add 10.0.3.254/24 dev eth0
+
+# Collision domain I (OVS1 and OVS2, collision domain D)
+ip address add 10.0.5.254/24 dev eth1
+
+route add default gw 10.0.5.253 eth1

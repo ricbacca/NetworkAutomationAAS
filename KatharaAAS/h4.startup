@@ -1,0 +1,6 @@
+ip address add 10.0.2.2/24 dev eth0
+ip route add default via 10.0.2.254 dev eth0
+
+cp sshd_config /etc/ssh/
+echo -e "111111\n111111" | passwd root
+service ssh start

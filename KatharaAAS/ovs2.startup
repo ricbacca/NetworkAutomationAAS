@@ -1,0 +1,18 @@
+# Starting OVS2 and configuring his output eths
+
+# Giving static IP address to collision domain R (Between OVSs and Ryu Controllers)
+ip address add 100.0.0.4/24 dev eth4
+
+service openvswitch-switch start
+
+ovs-vsctl add-br sw2
+ovs-vsctl set Bridge sw2 other-config:datapath-id=0000000000000002
+
+ovs-vsctl add-port sw2 eth0
+ovs-vsctl add-port sw2 eth1
+ovs-vsctl add-port sw2 eth2
+ovs-vsctl add-port sw2 eth3
+
+ovs-vsctl set-controller sw2 tcp:100.0.0.2:6653
+
+ovs-vsctl show
