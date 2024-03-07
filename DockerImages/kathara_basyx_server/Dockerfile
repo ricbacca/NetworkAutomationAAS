@@ -65,4 +65,5 @@ RUN apt install -y \
     traceroute \
     wget \
     vim
+RUN apt clean
 
