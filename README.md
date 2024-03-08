@@ -4,7 +4,7 @@ Project for LM-32 thesis. Network Automation in Industry 4.0, using Asset Adimin
 **To compile:**
 1. Compile Docker images
 2. Open App (Java Project) and run "gradle build"
-3. Verify in Kathara/aas_project/ there must be a jar called "OVS_AAS.jar"
+3. Verify in folder "Kathara/aas_project/" there must be a jar called "OVS_AAS.jar"
 4. If everything ok, go to Kathara folder and run: "kathara lstart"
 
 
@@ -12,8 +12,8 @@ Project for LM-32 thesis. Network Automation in Industry 4.0, using Asset Adimin
 **To compile docker images:**
 1. Go to DockerImages folder
 2. In each folder execute "sudo docker build -t dockerImageName ."
-
-**For the name of docker images:**
-- From folder "a_b_c"
-- Docker image MUST be named: "a/b_c"
-- So you must substitute the first underscore with a "/"
+3. Names must be:
+  - kathara/basyx_registry
+  - kathara/basyx_server
+  - kathara/jdk
+  - kathara/ryu
