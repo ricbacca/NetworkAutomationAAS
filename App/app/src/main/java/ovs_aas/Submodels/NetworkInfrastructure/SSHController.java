@@ -17,6 +17,7 @@ package ovs_aas.Submodels.NetworkInfrastructure;
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.JSchException;
 
+import ovs_aas.StaticProperties;
 import ovs_aas.Submodels.Utils.SSHManager;
 
 import java.util.Map;
@@ -26,9 +27,6 @@ public class SSHController {
     private SSHManager sshManager = new SSHManager();
     private Map<Integer, Channel> controllerChannels = new HashMap<>();
 
-    private final String SSH_CNT1 = "100.0.0.1";
-    private final String SSH_CNT2 = "100.0.0.2";
-
     private final String FIREWALL = "ryu.app.rest_firewall";
     private final String SIMPLE_SWITCH = "ryu.app.simple_switch_13";
     private final String API_REST = "ryu.app.ofctl_rest --wsapi-port";
@@ -36,8 +34,8 @@ public class SSHController {
     private final String KILL_RYU = "pkill ryu-manager";
 
     public SSHController() {
-        controllerChannels.put(1, sshManager.channelInit("shell", SSH_CNT1));
-        controllerChannels.put(2, sshManager.channelInit("shell", SSH_CNT2));
+        controllerChannels.put(1, sshManager.channelInit("shell", StaticProperties.SSH_CNT1));
+        controllerChannels.put(2, sshManager.channelInit("shell", StaticProperties.SSH_CNT2));
 
         controllerChannels.values().forEach(ch -> {
             ch.setOutputStream(System.out);
@@ -98,7 +96,7 @@ public class SSHController {
      * Executes a Kill command for ryu manager apps on each Ryu Controller.
      */
     private void killController() {
-        sshManager.executeSingleCommand(KILL_RYU, SSH_CNT1);
-        sshManager.executeSingleCommand(KILL_RYU, SSH_CNT2);
+        sshManager.executeSingleCommand(KILL_RYU, StaticProperties.SSH_CNT1);
+        sshManager.executeSingleCommand(KILL_RYU, StaticProperties.SSH_CNT2);
     }
 }

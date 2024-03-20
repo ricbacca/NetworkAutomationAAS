@@ -14,10 +14,9 @@
 
 package ovs_aas.RyuController.Utils;
 
-public enum ApiEnum {
-    CNT1("http://100.0.0.1:8080"),
-    CNT2("http://100.0.0.2:9090"),
+import ovs_aas.StaticProperties;
 
+public enum ApiEnum {
     GETALLSWITCHES("/stats/switches"),
 
     GETAGGREGATEFLOWSTATS("/stats/aggregateflow/"),
@@ -48,8 +47,8 @@ public enum ApiEnum {
      */
     public static String getElement(Integer controllerId, ApiEnum element) {
         if (element.equals(GETALLSWITCHES) || element.equals(SETROLE))
-            return (controllerId == 1 ? CNT1.url : CNT2.url) + element.url;
+            return (controllerId == 1 ? StaticProperties.CNT1_IP : StaticProperties.CNT2_IP) + element.url;
         else
-            return (controllerId == 1 ? CNT1.url : CNT2.url) + element.url + controllerId;
+            return (controllerId == 1 ? StaticProperties.CNT1_IP : StaticProperties.CNT2_IP) + element.url + controllerId;
     }
 }
