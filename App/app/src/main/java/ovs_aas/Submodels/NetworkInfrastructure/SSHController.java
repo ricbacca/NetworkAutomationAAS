@@ -34,8 +34,8 @@ public class SSHController {
     private final String KILL_RYU = "pkill ryu-manager";
 
     public SSHController() {
-        controllerChannels.put(1, sshManager.channelInit("shell", StaticProperties.SSH_CNT1));
-        controllerChannels.put(2, sshManager.channelInit("shell", StaticProperties.SSH_CNT2));
+        controllerChannels.put(1, sshManager.channelInit("shell", StaticProperties.CNT1));
+        controllerChannels.put(2, sshManager.channelInit("shell", StaticProperties.CNT2));
 
         controllerChannels.values().forEach(ch -> {
             ch.setOutputStream(System.out);
@@ -96,7 +96,7 @@ public class SSHController {
      * Executes a Kill command for ryu manager apps on each Ryu Controller.
      */
     private void killController() {
-        sshManager.executeSingleCommand(KILL_RYU, StaticProperties.SSH_CNT1);
-        sshManager.executeSingleCommand(KILL_RYU, StaticProperties.SSH_CNT2);
+        sshManager.executeSingleCommand(KILL_RYU, StaticProperties.CNT1);
+        sshManager.executeSingleCommand(KILL_RYU, StaticProperties.CNT2);
     }
 }

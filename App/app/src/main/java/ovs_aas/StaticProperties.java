@@ -19,23 +19,26 @@ package ovs_aas;
  * about which controller is on, and not cause any problems.
  */
 public class StaticProperties {
-    public static final String SSH_CNT1 = "100.0.0.1";
-    public static final String SSH_CNT2 = "100.0.0.2";
-    
-    public static final String CNT1_IP = "http://100.0.0.1:8080";
-    public static final String CNT2_IP = "http://100.0.0.2:9090";
-    
-    public static final String REGISTRY_POLLING_IP = "http://100.0.1.1:4000/registry/api/v1/registry";
-    public static final String REGISTRYPATH = "http://100.0.1.1:4000/registry/";
 
-    public static final String SW1_IP = "http://100.0.1.2:3333";
-    public static final String SW2_IP = "http://100.0.1.4:4444";
+    public static final String CNT1 = "100.0.0.1";
+    public static final String CNT2 = "100.0.0.2";
+
+    public static final int CNT1_PORT = 6633;
+    public static final int CNT2_PORT = 6653;
+    public static final int CNT1_API_REST_PORT = 8080;
+    public static final int CNT2_API_REST_PORT = 9090;
 
     public static final int NetworkInfrastructurePort = 6001;
     public static final int NetworkControlPlanePort = 6002;
     public static final int MachineOnePort = 6003;
     public static final int MachineTwoPort = 6004;
     public static final int MachineThreePort = 6005;
+    
+    public static final String REGISTRY_POLLING = "api/v1/registry";
+    public static final String REGISTRYPATH = "http://100.0.1.1:4000/registry/";
+
+    public static final String CNT1_API_REST_IP = "http://" + CNT1 + ":" + CNT1_API_REST_PORT;
+    public static final String CNT2_API_REST_IP = "http://" + CNT2 + ":" + CNT2_API_REST_PORT;
 
     public static final String Host1 = "10.0.1.1";
     public static final String Host2 = "10.0.1.2";

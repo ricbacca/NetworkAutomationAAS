@@ -47,8 +47,8 @@ public enum ApiEnum {
      */
     public static String getElement(Integer controllerId, ApiEnum element) {
         if (element.equals(GETALLSWITCHES) || element.equals(SETROLE))
-            return (controllerId == 1 ? StaticProperties.CNT1_IP : StaticProperties.CNT2_IP) + element.url;
+            return (controllerId == 1 ? StaticProperties.CNT1_API_REST_IP : StaticProperties.CNT2_API_REST_IP) + element.url;
         else
-            return (controllerId == 1 ? StaticProperties.CNT1_IP : StaticProperties.CNT2_IP) + element.url + controllerId;
+            return (controllerId == 1 ? StaticProperties.CNT1_API_REST_IP : StaticProperties.CNT2_API_REST_IP) + element.url + controllerId;
     }
 }
