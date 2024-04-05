@@ -17,7 +17,6 @@ package ovs_aas.RyuController;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -84,9 +83,11 @@ public class Controller extends AbstractController {
         int statusCode = 0;
         String statusMessage = "";
         try {
-            HttpResponse response = apacheClient.execute(httpPut);
+            CloseableHttpResponse response = apacheClient.execute(httpPut);
             statusCode = response.getStatusLine().getStatusCode();
             statusMessage = response.getStatusLine().getReasonPhrase();
+            if (response != null)
+                response.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -175,19 +176,15 @@ public class Controller extends AbstractController {
     public Boolean isServerAvailable(String URL) {
         HttpGet getRequest = new HttpGet(URL);
         int statusCode = 0;
-        CloseableHttpResponse response = null;
 
         try {
-            response = apacheClient.execute(getRequest);
+            CloseableHttpResponse response = apacheClient.execute(getRequest);
             statusCode = response.getStatusLine().getStatusCode();
-        } catch (IOException e) {} 
-        finally {
-            if (response != null) {
-                try {
-                    response.close();
-                } catch (IOException e) {}
-            }
-        }
+            if (response != null)
+                response.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } 
 
         return statusCode == HTTP_OK;
     }
