@@ -118,7 +118,7 @@ public class Controller extends AbstractController {
             jsonBody.put("nw_dst", dst);
         }
         
-        jsonBody.put("nw_proto", "ICMP");
+        //jsonBody.put("nw_proto", "ICMP");
         jsonBody.put("actions", actions);
         jsonBody.put("priority", priority);
 
