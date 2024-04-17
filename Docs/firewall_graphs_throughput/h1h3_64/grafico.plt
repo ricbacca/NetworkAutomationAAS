@@ -132,7 +132,7 @@ set ylabel "Throughput (Mbit/s)"
 set ylabel  font "" textcolor lt -1 rotate
 set y2label "" 
 set y2label  font "" textcolor lt -1 rotate
-set yrange [ * : * ] noreverse writeback
+set yrange [ * : 5 ] noreverse writeback
 set y2range [ * : * ] noreverse writeback
 set zlabel "" 
 set zlabel  font "" textcolor lt -1 norotate
@@ -166,8 +166,9 @@ set psdir
 set fit brief errorvariables nocovariancevariables errorscaling prescale nowrap v5
 GNUTERM = "qt"
 ## Last datafile plotted: "plot"
-set output "grafico.colorful"
-set term postscript eps enhanced color "Arial" 16
+set output "grafico.eps"
+set key top left Left reverse
+set term postscript eps "Arial" 16
 plot "input" using 1:3 with lines title "Client-server Traffic","input" using 1:4 with linespoints title "Controller-switch","input" using 1:5 with linespoints title "Client-Controller"
 set out
 set term x11
