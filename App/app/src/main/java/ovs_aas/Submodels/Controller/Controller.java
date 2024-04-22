@@ -152,7 +152,7 @@ public class Controller extends AbstractSubmodel {
 
     private Operation enableSingleHostTraffic() {
         Operation enableSingleHost = new Operation("EnableSingleHost");
-        enableSingleHost.setDescription(new LangStrings("English", "Single given host will be banned to/from traffic."));
+        enableSingleHost.setDescription(new LangStrings("English", "Single given host will send/receive messages."));
         enableSingleHost.setInputVariables(getUtils().getCustomInputVariables(Map.of(
             "HostIP", ValueType.String
         )));
