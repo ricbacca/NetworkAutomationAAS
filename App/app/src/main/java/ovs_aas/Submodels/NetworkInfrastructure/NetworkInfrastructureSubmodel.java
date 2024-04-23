@@ -16,6 +16,7 @@ package ovs_aas.Submodels.NetworkInfrastructure;
 
 import org.eclipse.basyx.submodel.metamodel.map.Submodel;
 import org.eclipse.basyx.submodel.metamodel.map.qualifier.LangStrings;
+import org.eclipse.basyx.submodel.metamodel.map.submodelelement.dataelement.File;
 import org.eclipse.basyx.submodel.metamodel.map.submodelelement.dataelement.property.valuetype.ValueType;
 import org.eclipse.basyx.submodel.metamodel.map.submodelelement.operation.Operation;
 
@@ -40,6 +41,7 @@ public class NetworkInfrastructureSubmodel extends AbstractSubmodel {
 
 		switches.setIdShort("Switches");
         switches.addSubmodelElement(switchesOperation());
+        switches.addSubmodelElement(description());
 
         controllers.setIdShort("SelectControllers");
         controllers.addSubmodelElement(setOpenController());
@@ -48,6 +50,15 @@ public class NetworkInfrastructureSubmodel extends AbstractSubmodel {
 
 		return List.of(switches, controllers);
 	}
+
+    private File description() {
+        File file = new File();
+        file.setMimeType("image/jpg");
+        file.setIdShort("Description");
+        file.setValue("https://raw.githubusercontent.com/ricbacca/NetworkAutomationAAS/main/Docs/OVS_RYU_AAS.jpg");
+
+        return file;
+    }
 
     private Operation switchesOperation() {
         Operation switches = new Operation("SwitchesInfo");
