@@ -1,0 +1,33 @@
+Elenco operazioni eseguite (numero pacchetto wireshark catturato, con filtro OPENFLOW_V4):
+1. Avvio controller (109, 111)
+2. Get regole (115, 117, 118, 119)
+3. Post regola 1 (120, 122, 123 -> spiego sotto perchè ci sono 3 FLOW_MOD per una singola regola inserita)
+4. Post regola 2 (148, 150, 151)
+5. Get regole (162, 164, 179, 181)
+6. Delete regola 1 (201)
+7. Delete regola 2 (213, entrambi DELETE_STRICT, spiego sotto la differenza tra DELETE E DELETE_STRICT)
+8. Stop controller
+
+
+Pacchetti OpenFlow:
+- HELLO, ERROR, ECHO*, EXPERIMENTER -> sono immutabili e simmetrici
+- FEATURES_REQUEST, FEATURE_REPLY -> The OFPT_FEATURES_REQUEST message is used by the controller to identify the switch and read its basic capabilities. Upon session establishment (see 6.3.1), the controller should send an OFPT_FEATURES_REQUEST message. This message does not contain a body beyond the OpenFlow header. The switch must respond with an OFPT_FEATURES_REPLY message.
+- GET_CONFIG_REQUEST, GET_CONFIG_REPLY, SET_CONFIG -> The controller is able to set and query configuration parameters in the switch with the OFPT_SET_CONFIG and OFPT_GET_CONFIG_REQUEST messages, respectively. The switch responds to a configuration request with an OFPT_GET_CONFIG_REPLY message; it does not reply to a request to set the configuration. There is no body for OFPT_GET_CONFIG_REQUEST beyond the OpenFlow header
+- FLOW_MOD -> modificare, aggiungere, eliminare regole sullo Switch (usato DAL controller). Modifications to a flow table from the controller are done with the OFPT_FLOW_MOD message.
+- MULTIPART_* -> Multipart messages are used to encode requests or replies that potentially carry a large amount of data and would not always fit in a single OpenFlow message, which is limited to 64KB. The request or reply is encoded as a sequence of multipart messages with a specific multipart type, and re-assembled by the receiver. Multipart messages are primarily used to request statistics or state information from the switch.
+- PORT_DESC -> The port description request OFPMP_PORT_DESCRIPTION enables the controller to get a description of all the ports in the system that support OpenFlow. The request body is empty. The reply body consists of an array.
+- ECHO_* -> The switch and controller can verify proper connectivity through the OpenFlow protocol with the new echo request (OFPT_ECHO_REQUEST) and reply (OFPT_ECHO_REPLY) messages. The body of the message is undefined and simply contains uninterpreted data that is to be echoed back to the requester. The requester matches the reply with the transaction id from the OpenFlow header.
+
+
+Dentro il FLOW_MOD ci sono i comandi utilizzati: OFPFC_DELETE(_strict) e stessa cosa per il MODIFY e poi OFPFC_ADD
+In the strict versions, the set of match fields, all match fields, including their masks, and the priority, are strictly matched against the entry, and only an identical flow entry is modified or removed. For example, if a message to remove entries is sent that has no match fields included, the OFPFC_DELETE command would delete all flow entries from the tables, while the OFPFC_DELETE_STRICT command would only delete a single flow entry that applies to all packets at the specified priority.
+OFPFC_ADD se ha il flag CHECK_OVERLAP, può rispondere con un OFPET_FLOW_MOD_FAILED se c'è già una regola inserita che matcha quella che si vuole inserire, e quindi l'operazione attuale viene annullata. The table_id field specifies the table into which the flow entry should be inserted, modified or deleted. Table 0 signifies the first table in the pipeline. The priority indicates priority within the specified flow table table. Higher numbers indicate higher priorities. This field is used only for OFPFC_ADD messages when matching and adding flow entries, and for OFPFC_MODIFY_STRICT or OFPFC_DELETE_STRICT messages when matching flow entries. If the controller uses the OFPFC_ADD command to add an entry that already exists, then the new entry replaces the old and all counters and timers are reset
+
+Perchè per ogni regola inserita ci sono 3 FLOW_MOD ?
+1. La prima ha solo il match OXM (OpenFlow Extended Match) e basta (non ho capito a cosa serva). The only valid match type in this specification is OFPMT_OXM, the OpenFlow 1.1 match type
+OFPMT_STANDARD is deprecated. If an alternate match type is used, the match fields and payload may
+be set differently, but this is outside the scope of this specification.
+2. La seconda nell'Action, fa l'output sulla PORTA OFPP_NORMAL, cioè il pacchetto che matcha viene processato al livello 2/3 di rete, dallo switch direttamente come avviene di solito
+3. La terza fa output sulla PORTA RISERVATA -> OFPP_CONTROLLER, cioè prende il pacchetto che matcha e lo manda al controller per essere processato, ad esempio se il pacchetto matcha più di una regola o è non valido
+
+
